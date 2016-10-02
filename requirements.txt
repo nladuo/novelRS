@@ -1,2 +1,4 @@
 pymongo
 requests
+jieba
+

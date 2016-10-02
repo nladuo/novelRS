@@ -10,6 +10,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+
 class ChapterCrawler:
 
     def __init__(self):
