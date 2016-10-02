@@ -17,6 +17,7 @@ class NovelCrawler:
         self.client = init_client()
         self.db = self.client[config['db_name']]
         self.collection = self.db.novels
+        self.collection.ensure_index('url', unique=True)
 
     def run(self):
         for i in range(1, 647):
@@ -48,8 +49,9 @@ class NovelCrawler:
 
     def __add_novels(self, novels):
         for novel in novels:
-            if self.collection.find({'url': novel.url}).count() == 0:
+            try:
                 self.collection.insert(novel.dict())
+            except: pass
 
     def __close(self):
         self.client.close()

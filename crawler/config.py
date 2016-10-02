@@ -6,5 +6,5 @@ config = {
     'db_pass': '',
     'db_host': 'localhost',
     'db_port': 27017,
-    'db_name': 'novel_rs', #需创建taobao数据库
+    'db_name': 'novel_rs'
 }

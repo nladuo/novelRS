@@ -1,4 +1,5 @@
 pymongo
 requests
 jieba
-
+bs4
+gevent
