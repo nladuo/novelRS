@@ -6,7 +6,6 @@ from model import *
 from utils import *
 from config import *
 from bs4 import BeautifulSoup
-from gevent.threadpool import ThreadPool
 import sys
 import time
 
@@ -38,43 +37,46 @@ class ChapterCrawler:
             )
             n._id = novel['_id']
             novels.append(n)
-            pass
 
         for novel in novels:
             print novel._id, "  ---> scraping", novel.name, novel.author, time.strftime("%Y-%m-%d %H:%M:%S",
                                                                       time.localtime(time.time()))
             html = get_body(novel.url)
             pre_chapters = self.__parse_chapters(novel._id, novel.url, html)
-
-            tasks = []
-            q = gevent.queue.Queue()
-            pool = ThreadPool(20)
-
-            for chapter in pre_chapters:
-                pool.spawn(self.__async_get_chapter_content, chapter, q)
-            pool.join()
-
+            pre_chapters_set = self.__split_pre_chapters(pre_chapters)
             chapter_count = 0
-            while not q.empty():
-                dict = q.get()
-                body = dict['body']
-                chapter = dict['chapter']
-                print "success --->", chapter.url
-                if len(body) == 0:
-                    add_failed_url(self.db, chapter.url)
-                    continue
-                try:
-                    content = self.__parse_chapter_content(body)
-                    chapter.content = content
-                    self.__add_chapter(chapter)
-                    chapter_count += 1
-                except: pass
+            for pre_chapters in pre_chapters_set:
+                tasks = []
+                q = gevent.queue.Queue()
+
+                for chapter in pre_chapters:
+                    tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
+                gevent.joinall(tasks)
+
+                while not q.empty():
+                    dict = q.get()
+                    body = dict['body']
+                    chapter = dict['chapter']
+                    if len(body) == 0:
+                        add_failed_url(self.db, chapter.url)
+                        continue
+                    print "success --->", chapter.url
+                    try:
+                        content = self.__parse_chapter_content(body)
+                        chapter.content = content
+                        self.__add_chapter(chapter)
+                        chapter_count += 1
+                    except: pass
             # 小于100章的不进行统计，把novel的success设为0
             if chapter_count <= 100:
                 self.__update_failed_novel(novel)
             self.__update_novel(novel)  # 把novel的is_crawled设为1
 
         self.__close()
+
+    def __split_pre_chapters(self, pre_chapters, num=50):
+        return [pre_chapters[i: i + num] for i in range(len(pre_chapters)) if i % num == 0]
+
 
     def __add_chapter(self, chapter):
         try:
