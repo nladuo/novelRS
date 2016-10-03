@@ -66,9 +66,12 @@ class ChapterCrawler:
                         chapter.content = content
                         self.__add_chapter(chapter)
                         chapter_count += 1
+                        # 硬盘空间不够，每本小说最多只爬取100章
+                        if chapter_count >= 100:
+                            break
                     except: pass
-            # 小于100章的不进行统计，把novel的success设为0
-            if chapter_count <= 100:
+            # 小于100章的小说不进行统计，把novel的success设为0
+            if chapter_count < 100:
                 self.__update_failed_novel(novel)
             self.__update_novel(novel)  # 把novel的is_crawled设为1
 
@@ -76,12 +79,6 @@ class ChapterCrawler:
 
     def __split_pre_chapters(self, pre_chapters, num=50):
         return [pre_chapters[i: i + num] for i in range(len(pre_chapters)) if i % num == 0]
-
-
-    def __add_chapter(self, chapter):
-        try:
-            self.collection.insert(chapter.dict())
-        except: pass
 
     def __async_get_chapter_content(self, chapter, q):
         body = get_body(chapter.url)
@@ -103,10 +100,17 @@ class ChapterCrawler:
         # print contents.text
         return contents.text
 
+    def __add_chapter(self, chapter):
+        try:
+            self.collection.insert(chapter.dict())
+        except:
+            pass
+
     def __update_novel(self, novel):
         self.db.novels.update({'_id': novel._id}, {
             '$set': {'is_crawled': True},
         })
+        self.collection.remove({'novel_id': novel._id})
 
     def __update_failed_novel(self, novel):
         self.db.novels.update({'_id': novel._id}, {
@@ -119,3 +123,4 @@ class ChapterCrawler:
 
 crawler = ChapterCrawler()
 crawler.run()
+print "chatper_crawler has been finished."

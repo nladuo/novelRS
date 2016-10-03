@@ -59,3 +59,4 @@ class NovelCrawler:
 
 crawler = NovelCrawler()
 crawler.run()
+print "novel_crawler has been finished."

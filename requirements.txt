@@ -3,3 +3,4 @@ requests
 jieba
 bs4
 gevent
+scikit-learn
