@@ -51,12 +51,14 @@ class NovelCrawler:
         for novel in novels:
             try:
                 self.collection.insert(novel.dict())
-            except: pass
+            except:
+                pass
 
     def __close(self):
         self.client.close()
 
 
-crawler = NovelCrawler()
-crawler.run()
-print "novel_crawler has been finished."
+if __name__ == '__main__':
+    crawler = NovelCrawler()
+    crawler.run()
+    print "novel_crawler has been finished."

@@ -20,8 +20,6 @@ class ChapterCrawler:
         self.client = init_client()
         self.db = self.client[config['db_name']]
         self.novels = self.db.novels.find({'is_crawled': False})
-        self.collection = self.db.chapters
-        self.collection.ensure_index('url', unique=True)
 
     def run(self):
         novels = []
@@ -39,8 +37,8 @@ class ChapterCrawler:
             novels.append(n)
 
         for novel in novels:
-            print novel._id, "  ---> scraping", novel.name, novel.author, time.strftime("%Y-%m-%d %H:%M:%S",
-                                                                      time.localtime(time.time()))
+            print "scraping", novel._id, novel.name, novel.author, \
+                time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
             html = get_body(novel.url)
             pre_chapters = self.__parse_chapters(novel._id, novel.url, html)
             # 小于100章的小说不进行统计，把novel的success设为0
@@ -53,9 +51,11 @@ class ChapterCrawler:
             for chapter in pre_chapters:
                 tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
                 chapter_count += 1
-                if chapter_count > 100:     # 硬盘空间不够，每本小说最多只爬取100章
+                if chapter_count > 100:     # 硬盘空间不够，每本小说只爬取100章
                     break
             gevent.joinall(tasks)
+
+            novel_content = ''
             while not q.empty():
                 dict = q.get()
                 body = dict['body']
@@ -63,15 +63,14 @@ class ChapterCrawler:
                 if len(body) == 0:
                     add_failed_url(self.db, chapter.url)
                     continue
-                print "success --->", chapter.url
                 try:
                     content = self.__parse_chapter_content(body)
-                    chapter.content = content
-                    self.__add_chapter(chapter)
-                except: pass
-
+                    novel_content += content
+                except:
+                    pass
+            self.__save_novel(novel, novel_content)
             self.__update_novel(novel)  # 把novel的is_crawled设为1
-            
+
         self.__close()
 
     def __split_pre_chapters(self, pre_chapters, num=100):
@@ -97,11 +96,11 @@ class ChapterCrawler:
         # print contents.text
         return contents.text
 
-    def __add_chapter(self, chapter):
-        try:
-            self.collection.insert(chapter.dict())
-        except:
-            pass
+    def __save_novel(self, novel, novel_content):
+        filename = str(novel._id) + ".txt"
+        f = open('./corpus/' + filename, 'w')
+        f.write(novel_content)
+        f.close()
 
     def __update_novel(self, novel):
         self.db.novels.update({'_id': novel._id}, {
@@ -117,7 +116,7 @@ class ChapterCrawler:
     def __close(self):
         self.client.close()
 
-
-crawler = ChapterCrawler()
-crawler.run()
-print "chatper_crawler has been finished."
+if __name__ == '__main__':
+    crawler = ChapterCrawler()
+    crawler.run()
+    print "chatper_crawler has been finished."
