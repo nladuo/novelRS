@@ -43,41 +43,38 @@ class ChapterCrawler:
                                                                       time.localtime(time.time()))
             html = get_body(novel.url)
             pre_chapters = self.__parse_chapters(novel._id, novel.url, html)
-            pre_chapters_set = self.__split_pre_chapters(pre_chapters)
-            chapter_count = 0
-            for pre_chapters in pre_chapters_set:
-                tasks = []
-                q = gevent.queue.Queue()
-
-                for chapter in pre_chapters:
-                    tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
-                gevent.joinall(tasks)
-
-                while not q.empty():
-                    dict = q.get()
-                    body = dict['body']
-                    chapter = dict['chapter']
-                    if len(body) == 0:
-                        add_failed_url(self.db, chapter.url)
-                        continue
-                    print "success --->", chapter.url
-                    try:
-                        content = self.__parse_chapter_content(body)
-                        chapter.content = content
-                        self.__add_chapter(chapter)
-                        chapter_count += 1
-                        # 硬盘空间不够，每本小说最多只爬取100章
-                        if chapter_count >= 100:
-                            break
-                    except: pass
             # 小于100章的小说不进行统计，把novel的success设为0
-            if chapter_count < 100:
+            if len(pre_chapters) <= 100:
                 self.__update_failed_novel(novel)
-            self.__update_novel(novel)  # 把novel的is_crawled设为1
+                continue
+            tasks = []
+            q = gevent.queue.Queue()
+            chapter_count = 0
+            for chapter in pre_chapters:
+                tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
+                chapter_count += 1
+                if chapter_count > 100:     # 硬盘空间不够，每本小说最多只爬取100章
+                    break
+            gevent.joinall(tasks)
+            while not q.empty():
+                dict = q.get()
+                body = dict['body']
+                chapter = dict['chapter']
+                if len(body) == 0:
+                    add_failed_url(self.db, chapter.url)
+                    continue
+                print "success --->", chapter.url
+                try:
+                    content = self.__parse_chapter_content(body)
+                    chapter.content = content
+                    self.__add_chapter(chapter)
+                except: pass
 
+            self.__update_novel(novel)  # 把novel的is_crawled设为1
+            
         self.__close()
 
-    def __split_pre_chapters(self, pre_chapters, num=50):
+    def __split_pre_chapters(self, pre_chapters, num=100):
         return [pre_chapters[i: i + num] for i in range(len(pre_chapters)) if i % num == 0]
 
     def __async_get_chapter_content(self, chapter, q):
@@ -110,12 +107,12 @@ class ChapterCrawler:
         self.db.novels.update({'_id': novel._id}, {
             '$set': {'is_crawled': True},
         })
-        self.collection.remove({'novel_id': novel._id})
 
     def __update_failed_novel(self, novel):
         self.db.novels.update({'_id': novel._id}, {
             '$set': {'success': False},
         })
+        self.__update_novel(novel)
 
     def __close(self):
         self.client.close()
