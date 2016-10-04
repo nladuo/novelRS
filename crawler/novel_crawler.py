@@ -41,8 +41,8 @@ class NovelCrawler:
             html2 = get_body(tds[0].a.attrs['href'])
             bs_obj2 = BeautifulSoup(html2)
             url = bs_obj2.find('a', {'class': 'read'}).attrs['href']
-            word_num = bs_obj2.find_all('td')[0].text
-            category = bs_obj2.find_all('td')[4].text
+            category = bs_obj2.find_all('td')[0].text.strip()
+            word_num = bs_obj2.find_all('td')[4].text
             author = tds[2].text
             novels.append(Novel(name, author, category, word_num, url, False, True))
             print name, author, category,  word_num, url

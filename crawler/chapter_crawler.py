@@ -51,9 +51,10 @@ class ChapterCrawler:
             q = gevent.queue.Queue()
             chapter_count = 0
             for chapter in pre_chapters:
-                tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
+                if chapter_count % 3 == 0:  # 每隔3章抽取一章
+                    tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
                 chapter_count += 1
-                if chapter_count > 100:     # 硬盘空间不够，每本小说只爬取100章
+                if chapter_count > 30:      # 节省计算，每本小说只爬取10章
                     break
             gevent.joinall(tasks)
 

@@ -23,6 +23,7 @@ mongoimport -d novel_rs -c novels  --file ./novels.dat
 ## TODO
 - [ ] 1. 使用TF-IDF对corpus向量化.
 - [ ] 2. 分词时添加停用词.
+- [ ] 3. 多核计算相似度
 
 ## LICENSE
 MIT
