@@ -101,6 +101,7 @@ class ChapterCrawler:
         f = open('./corpus/' + filename, 'w')
         f.write(novel_content)
         f.close()
+        print "saving ", './corpus/' + filename
 
     def __update_novel(self, novel):
         self.db.novels.update({'_id': novel._id}, {
