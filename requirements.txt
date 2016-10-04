@@ -4,4 +4,4 @@ jieba
 bs4
 gevent
 scikit-learn
-gensim
+numpy

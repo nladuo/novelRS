@@ -2,7 +2,6 @@
 import jieba
 import os
 import sys
-from stop_words import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -10,12 +9,7 @@ sys.setdefaultencoding('utf8')
 
 def word_segmentation(text):
     words = jieba.cut_for_search(text)
-    result = ''
-    for word in words:
-        if word in stop_words:
-            continue
-        result += word + " "
-    return result
+    return " ".join(words)
 
 
 def read_file(filename):
@@ -27,13 +21,14 @@ def read_file(filename):
 
 
 def save_file(filename, text):
-    filename = 'seg_corpus/1/' + filename
+    filename = 'seg_corpus/' + filename
     f = open(filename, "wb")
     f.write(text)
     f.close()
 
 
 if __name__ == '__main__':
+    jieba.enable_parallel(4)
     txts = os.listdir("../crawler/corpus/")
     for filename in txts:
         print filename
