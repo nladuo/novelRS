@@ -19,7 +19,8 @@ class Novel:
             'word_num': self.word_num,
             'url': self.url,
             'is_crawled': self.is_crawled,
-            'success': self.success
+            'success': self.success,
+            'similarities': ""          # 记录相似的小说
         }
 
 
@@ -46,3 +47,16 @@ class FailedUrl:
 
     def dict(self):
         return {'url': self.url}
+
+
+class Similarity:
+    """ 保存两个小说之间相似度 """
+    def __init__(self, _id, similarity):
+        self._id = _id
+        self.similarity = similarity
+
+    def dict(self):
+        return {
+            '_id': self._id,
+            'similarity': self.similarity,
+        }

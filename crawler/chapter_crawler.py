@@ -2,12 +2,14 @@
 from gevent import monkey; monkey.patch_all()
 import gevent
 from gevent import queue
-from model import *
-from utils import *
-from config import *
+import time
 from bs4 import BeautifulSoup
 import sys
-import time
+sys.path.append("../")
+from lib.utils import *
+from lib.model import *
+from lib.config import *
+
 
 
 reload(sys)

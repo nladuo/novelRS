@@ -3,5 +3,6 @@ requests
 jieba
 bs4
 gevent
-scikit-learn
 numpy
+scikit-learn
+cPickle

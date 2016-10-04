@@ -1,10 +1,11 @@
 # coding=utf-8
 
-from model import *
-from utils import *
-from config import *
 from bs4 import BeautifulSoup
 import sys
+sys.path.append("../")
+from lib.utils import *
+from lib.model import *
+from lib.config import *
 
 
 reload(sys)

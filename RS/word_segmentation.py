@@ -8,11 +8,13 @@ sys.setdefaultencoding('utf8')
 
 
 def word_segmentation(text):
+    """ 用结巴分词 """
     words = jieba.cut_for_search(text)
     return " ".join(words)
 
 
 def read_file(filename):
+    """ 读取corpus """
     filename = '../crawler/corpus/' + filename
     f = open(filename, "rb")
     text = f.read()
@@ -21,6 +23,7 @@ def read_file(filename):
 
 
 def save_file(filename, text):
+    """ 保存到seg_corpus """
     filename = 'seg_corpus/' + filename
     f = open(filename, "wb")
     f.write(text)
