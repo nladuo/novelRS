@@ -11,7 +11,6 @@ from lib.model import *
 from lib.config import *
 
 
-
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -43,18 +42,17 @@ class ChapterCrawler:
                 time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
             html = get_body(novel.url)
             pre_chapters = self.__parse_chapters(novel._id, novel.url, html)
-            # 小于100章的小说不进行统计，把novel的success设为0
-            if len(pre_chapters) <= 100:
+            # 小于500章的小说不进行统计，把novel的success设为0
+            if len(pre_chapters) <= 500:
                 self.__update_failed_novel(novel)
                 continue
             tasks = []
             q = gevent.queue.Queue()
             chapter_count = 0
             for chapter in pre_chapters:
-                if chapter_count % 3 == 0:  # 每隔3章抽取一章
-                    tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
+                tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
                 chapter_count += 1
-                if chapter_count > 30:      # 节省计算，每本小说只爬取10章
+                if chapter_count > 50:      # 节省硬盘，每本小说只爬取前50章
                     break
             gevent.joinall(tasks)
 
