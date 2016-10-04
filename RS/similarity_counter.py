@@ -7,14 +7,10 @@ import operator
 import cPickle
 import sys
 from bson.objectid import ObjectId
-import pymongo
 sys.path.append("../")
 from lib.model import *
 from lib.utils import *
 from lib.config import *
-
-
-
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -32,11 +28,13 @@ class SimilarityCounter:
         txts = os.listdir("./seg_corpus/")
         count = 1
         for filename in txts:
+            if filename == '.gitignore':
+                continue
             similarities = []
             novel_id = os.path.splitext(filename)[0]
             print count, '---->', novel_id
             for filename2 in txts:
-                if filename == filename2:
+                if (filename == filename2) or (filename2 == '.gitignore'):
                     continue
                 text = self.__read_file(filename)
                 text2 = self.__read_file(filename2)

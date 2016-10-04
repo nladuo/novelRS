@@ -34,6 +34,8 @@ if __name__ == '__main__':
     jieba.enable_parallel(4)
     txts = os.listdir("../crawler/corpus/")
     for filename in txts:
+        if filename == '.gitignore':
+            continue
         print filename
         text = read_file(filename)
         text = word_segmentation(text)

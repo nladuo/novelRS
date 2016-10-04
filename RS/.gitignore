@@ -1,4 +1,3 @@
 *.pyc
 *.log
 test.py
-seg_corpus/
