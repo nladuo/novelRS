@@ -2,6 +2,8 @@
 import jieba
 import os
 import sys
+sys.path.append("../")
+from lib.config import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -31,7 +33,7 @@ def save_file(filename, text):
 
 
 if __name__ == '__main__':
-    jieba.enable_parallel(4)
+    jieba.enable_parallel(config['cpu_num'] - 1)  # 并发分词
     txts = os.listdir("../crawler/corpus/")
     for filename in txts:
         if filename == '.gitignore':
