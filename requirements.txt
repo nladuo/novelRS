@@ -5,4 +5,3 @@ bs4
 gevent
 numpy
 scikit-learn
-cPickle
