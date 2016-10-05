@@ -6,6 +6,7 @@ import numpy as np
 import operator
 import cPickle
 import sys
+from datetime import datetime
 from bson.objectid import ObjectId
 sys.path.append("../")
 from lib.model import *
@@ -27,7 +28,9 @@ class SimilarityCounter:
     def run(self):
         txts = os.listdir("./seg_corpus/")
         count = 1
+
         for filename in txts:
+            before_exec_time = datetime.now()
             if filename == '.gitignore':
                 continue
             similarities = []
@@ -44,9 +47,12 @@ class SimilarityCounter:
             # 对相似度进行排序，把前30个更新到数据库中
             similarities.sort(key=operator.attrgetter("similarity"), reverse=True)
             self.__update_novel_similarities(novel_id, similarities)
-            print "The most similar one is :", similarities[0]._id, similarities[0].similarity
+            print "最相似的是:", similarities[0]._id, similarities[0].similarity
+            after_exec_time = datetime.now()
+            print "耗时：", (after_exec_time - before_exec_time).seconds, "秒"
             count += 1
         self.__close()
+        print "similarities counting finished."
 
     def __get_cosine_similarity(self, text1, text2):
         """ 获取余弦相似度 """

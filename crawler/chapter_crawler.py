@@ -42,8 +42,8 @@ class ChapterCrawler:
                 time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
             html = get_body(novel.url)
             pre_chapters = self.__parse_chapters(novel._id, novel.url, html)
-            # 小于500章的小说不进行统计，把novel的success设为0
-            if len(pre_chapters) <= 500:
+            # 小于300章的小说不进行统计，把novel的success设为0
+            if len(pre_chapters) <= 300:
                 self.__update_failed_novel(novel)
                 continue
             tasks = []
