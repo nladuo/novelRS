@@ -2,7 +2,8 @@
 
 
 class Novel:
-    def __init__(self, name, author, category, word_num, url, is_crawled, success):
+    def __init__(self, name, author, category, word_num, url,
+                 is_crawled, success, is_segment, is_compute):
         self.name = name
         self.author = author
         self.category = category
@@ -10,6 +11,8 @@ class Novel:
         self.url = url
         self.is_crawled = is_crawled    # 是否爬取过章节
         self.success = success          # 爬取章节是否成功
+        self.is_segment = is_segment    # 有没有分割过
+        self.is_compute = is_compute    # 有没有计算过相似度
 
     def dict(self):
         return {
@@ -20,6 +23,8 @@ class Novel:
             'url': self.url,
             'is_crawled': self.is_crawled,
             'success': self.success,
+            'is_segment': self.is_segment,
+            'is_compute': self.is_compute,
             'similarities': ""          # 记录相似的小说
         }
 

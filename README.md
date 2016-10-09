@@ -14,7 +14,26 @@ mongoimport -d novel_rs -c novels  --file ./novels.dat
 ```
 
 ## 安装
+### 配置
+修改lib/config.py
+```
+config = {
+    'timeout': 3,
+    'db_user': '',          # 无密码
+    'db_pass': '',
+    'db_host': 'localhost',
+    'db_port': 27017,
+    'db_name': 'novel_rs',
+    'cpu_num': 4            # 并行分词的CPU数目
+}
+```
+
 ### 爬虫
+``` shell
+python crawler/novel_crawler.py
+python crawler/chap
+
+```
 
 ### 推荐系统
 

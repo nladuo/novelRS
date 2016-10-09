@@ -32,6 +32,7 @@ exports.cssLoaders = function (options) {
     }
   }
 
+  // http://vuejs.github.io/vue-loader/configurations/extract-css.html
   return {
     css: generateLoaders(['css']),
     postcss: generateLoaders(['css']),
@@ -43,6 +44,7 @@ exports.cssLoaders = function (options) {
   }
 }
 
+// Generate loaders for standalone style files (outside of .vue)
 exports.styleLoaders = function (options) {
   var output = []
   var loaders = exports.cssLoaders(options)

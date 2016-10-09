@@ -24,6 +24,7 @@ class ChapterCrawler:
 
     def run(self):
         novels = []
+        # 先把数据都读到内存里
         for novel in self.novels:
             n = Novel(
                 novel['name'],
@@ -31,8 +32,10 @@ class ChapterCrawler:
                 novel['category'],
                 novel['word_num'],
                 novel['url'],
-                False,
-                True
+                novel['is_crawled'],
+                novel['success'],
+                novel['is_segment'],
+                novel['is_compute']
             )
             n._id = novel['_id']
             novels.append(n)
