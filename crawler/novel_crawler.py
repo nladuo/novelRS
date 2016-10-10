@@ -31,7 +31,18 @@ class NovelCrawler:
             self.__add_novels(novels)
         self.__close()
 
-    def __parse(self, html):
+    def __add_novels(self, novels):
+        for novel in novels:
+            try:
+                self.collection.insert(novel.dict())
+            except:
+                pass
+
+    def __close(self):
+        self.client.close()
+
+    @staticmethod
+    def __parse(html):
         novels = []
         bs_obj = BeautifulSoup(html)
         trs = bs_obj.find_all('tr', {'bgcolor': '#FFFFFF'})
@@ -45,18 +56,8 @@ class NovelCrawler:
             word_num = bs_obj2.find_all('td')[4].text
             author = tds[2].text
             novels.append(Novel(name, author, category, word_num, url, False, True, False, False))
-            print name, author, category,  word_num, url
+            print name, author, category, word_num, url
         return novels
-
-    def __add_novels(self, novels):
-        for novel in novels:
-            try:
-                self.collection.insert(novel.dict())
-            except:
-                pass
-
-    def __close(self):
-        self.client.close()
 
 
 if __name__ == '__main__':

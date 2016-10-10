@@ -52,13 +52,23 @@ class WordSegmentation:
         self.__close()
         print "word segmentation finished."
 
+    def __update_novel(self, novel_id):
+        """ 更新is_segment """
+        self.db.novels.update({'_id': ObjectId(novel_id)}, {
+            '$set': {'is_segment': True},
+        })
 
-    def __segment(self, text):
+    def __close(self):
+        self.client.close()
+
+    @staticmethod
+    def __segment(text):
         """ 用结巴分词 """
         words = jieba.cut_for_search(text)
         return " ".join(words)
 
-    def __read_file(self, _id):
+    @staticmethod
+    def __read_file(_id):
         """ 读取corpus """
         filename = '../crawler/corpus/' + _id + '.txt'
         if os.path.exists(filename):
@@ -69,20 +79,13 @@ class WordSegmentation:
         else:
             raise Exception('文件：' + filename + " 不存在")
 
-    def __save_file(self, _id, text):
+    @staticmethod
+    def __save_file(_id, text):
         """ 保存到seg_corpus """
         filename = 'seg_corpus/' + _id + '.txt'
         f = open(filename, "wb")
         f.write(text)
         f.close()
-
-    def __update_novel(self, novel_id):
-        self.db.novels.update({'_id': ObjectId(novel_id)}, {
-            '$set': {'is_segment': True},
-        })
-
-    def __close(self):
-        self.client.close()
 
 
 if __name__ == '__main__':

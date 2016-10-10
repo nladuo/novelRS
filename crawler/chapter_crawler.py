@@ -77,36 +77,6 @@ class ChapterCrawler:
 
         self.__close()
 
-    def __split_pre_chapters(self, pre_chapters, num=100):
-        return [pre_chapters[i: i + num] for i in range(len(pre_chapters)) if i % num == 0]
-
-    def __async_get_chapter_content(self, chapter, q):
-        body = get_body(chapter.url)
-        q.put({'chapter': chapter, 'body': body})
-        print chapter.url
-
-    def __parse_chapters(self, _id, url, html):
-        chapters = []
-        bs_obj = BeautifulSoup(html)
-        tds = bs_obj.find_all('td', {'class', 'L'})
-        for td in tds:
-            if td.text.strip() != '':
-                chapters.append(Chapter(_id, td.text.strip(), url + td.a.attrs['href']))
-        return chapters
-
-    def __parse_chapter_content(self, html):
-        bs_obj = BeautifulSoup(html)
-        contents = bs_obj.find('dd', {'id': 'contents'})
-        # print contents.text
-        return contents.text
-
-    def __save_novel(self, novel, novel_content):
-        filename = str(novel._id) + ".txt"
-        f = open('./corpus/' + filename, 'w')
-        f.write(novel_content)
-        f.close()
-        print "saving ", './corpus/' + filename
-
     def __update_novel(self, novel):
         self.db.novels.update({'_id': novel._id}, {
             '$set': {'is_crawled': True},
@@ -120,6 +90,41 @@ class ChapterCrawler:
 
     def __close(self):
         self.client.close()
+
+    @staticmethod
+    def __split_pre_chapters(pre_chapters, num=100):
+        return [pre_chapters[i: i + num] for i in range(len(pre_chapters)) if i % num == 0]
+
+    @staticmethod
+    def __async_get_chapter_content(chapter, q):
+        body = get_body(chapter.url)
+        q.put({'chapter': chapter, 'body': body})
+        print chapter.url
+
+    @staticmethod
+    def __parse_chapters(_id, url, html):
+        chapters = []
+        bs_obj = BeautifulSoup(html)
+        tds = bs_obj.find_all('td', {'class', 'L'})
+        for td in tds:
+            if td.text.strip() != '':
+                chapters.append(Chapter(_id, td.text.strip(), url + td.a.attrs['href']))
+        return chapters
+
+    @staticmethod
+    def __parse_chapter_content(html):
+        bs_obj = BeautifulSoup(html)
+        contents = bs_obj.find('dd', {'id': 'contents'})
+        # print contents.text
+        return contents.text
+
+    @staticmethod
+    def __save_novel(novel, novel_content):
+        filename = str(novel._id) + ".txt"
+        f = open('./corpus/' + filename, 'w')
+        f.write(novel_content)
+        f.close()
+        print "saving ", './corpus/' + filename
 
 if __name__ == '__main__':
     crawler = ChapterCrawler()

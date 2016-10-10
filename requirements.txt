@@ -5,3 +5,4 @@ bs4
 gevent
 numpy
 scikit-learn
+flask
