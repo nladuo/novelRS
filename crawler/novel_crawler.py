@@ -44,7 +44,7 @@ class NovelCrawler:
             category = bs_obj2.find_all('td')[0].text.strip()
             word_num = bs_obj2.find_all('td')[4].text
             author = tds[2].text
-            novels.append(Novel(name, author, category, word_num, url, False, True))
+            novels.append(Novel(name, author, category, word_num, url, False, True, False, False))
             print name, author, category,  word_num, url
         return novels
 

@@ -47,20 +47,21 @@ class SimilarityCounter:
             )
             n._id = novel['_id']
             novels.append(n)
-
         count = 1       # 记录计算了几个
         # 开始分割
         for n in novels:
             if n.is_compute:    # 计算过相似度的就不再计算了
                 continue
             nid = str(n._id)
+            category = n.category
             before_exec_time = datetime.now()
             similarities = []     # 保存所有的相似度
             content = self.__read_file(nid)
             print count, '---->', nid, "  ", n.name
             for n2 in novels:
+                category2 = n2.category
                 nid2 = str(n2._id)
-                if (nid == nid2):
+                if (nid == nid2 or category != category2):
                     continue
                 content2 = self.__read_file(nid2)
                 similarity = self.__get_cosine_similarity(content, content2)
@@ -94,7 +95,6 @@ class SimilarityCounter:
         """ 读取文件 """
         filename = './seg_corpus/' + novel_id + '.txt'
         if os.path.exists(filename):
-            message = 'OK, the "%s" file exists.'
             f = open(filename, "rb")
             text = f.read()
             f.close()
