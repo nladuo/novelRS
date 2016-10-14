@@ -10,7 +10,7 @@
 
 ### 导入数据
 ``` shell
-mongoimport -d novel_rs -c novels  --file ./novels.dat
+mongoimport -d novelRS -c novels  --file ./novels.dat
 ```
 
 ## 算法步骤
