@@ -4,6 +4,11 @@
 ## 状态
 正在构建中。。。
 
+## web技术
+前端：vue+vuex <br>
+后端：flask <br>
+数据库：mongodb
+
 ## 小说数据
 ### 下载地址
 链接: 待上传。。。。。
@@ -27,13 +32,18 @@ mongoimport -d novelRS -c novels  --file ./novels.dat
 ``` python
 config = {
     'timeout': 3,
-    'db_user': '',          # 无密码
-    'db_pass': '',
+    'db_user': '',          # mongo的用户名
+    'db_pass': '',          # mongo的密码
     'db_host': 'localhost',
     'db_port': 27017,
-    'db_name': 'novel_rs',
+    'db_name': 'novelRS',
     'cpu_num': 4            # 并行分词的CPU数目
 }
+```
+
+### 安装依赖
+``` shell
+pip install -r requirements.txt
 ```
 
 ### 爬虫
@@ -47,7 +57,7 @@ python crawler/chapter_crawler.py   # 爬去小说章节
 python RS/word_segmentation.py  # 爬取小说
 python RS/get_vectorizer.py     # 爬去小说章节
 python RS/vectorize.py          # 向量化
-python RS/tdidf_transformer.py  # 转换为tf-idf向量
+python RS/tfidf_transformer.py  # 转换为tf-idf向量
 python RS/kmeans_cluster.py     # 聚类减小复杂度
 python RS/similarity_counter.py # 计算相似度
 ```
@@ -55,7 +65,7 @@ python RS/similarity_counter.py # 计算相似度
 ### web服务
 ``` shell
 cd web && npm install
-npm build               # 构建前端
+npm run build           # 构建前端
 python main.py          # 启动web服务器
 ```
 

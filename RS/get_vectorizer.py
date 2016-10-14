@@ -16,6 +16,7 @@ if __name__ == '__main__':
 
     filenames = os.listdir('./seg_corpus')
     random.shuffle(filenames)
+    print "loading dataset...."
     contents = [open('./seg_corpus/' + filename).read()
                 for i, filename in enumerate(filenames) if i < MAX_FILES_NUM]
 
@@ -24,5 +25,5 @@ if __name__ == '__main__':
 
     f = open('vectorizer.dat', 'w')
     pickle.dump(vectorizer, f)
-    print 'saved vectorizer.dat'
+    print 'saved in vectorizer.dat'
 

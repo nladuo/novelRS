@@ -33,7 +33,7 @@ class MyTransformer:
         for novel in self.novels:
             novels.append(novel)
         X = []
-        print "start transforming."
+        print "start transforming..."
         # 读取向量
         for novel in novels:
             X.append(json.loads(novel['vector']))

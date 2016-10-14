@@ -47,7 +47,7 @@ class KMeansCluster:
         km.fit(X)
 
         # 存到数据库中
-        print "saving into database."
+        print "saving into database..."
         for i, novel in enumerate(novels):
             cluster = int(km.labels_[i])
             self.__update_novel(novel['_id'], cluster)
