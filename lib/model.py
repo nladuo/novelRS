@@ -29,6 +29,23 @@ class Novel:
         }
 
 
+class Chapter:
+    """ 储存小说章节 """
+    def __init__(self, novel_id, name, url, content=''):
+        self.novel_id = novel_id
+        self.name = name
+        self.url = url
+        self.content = content
+
+    def dict(self):
+        return {
+            'novel_id': self.novel_id,
+            'name': self.name,
+            'url': self.url,
+            'content': self.content
+        }
+
+
 class FailedUrl:
     """ 失败的链接 """
     def __init__(self, url):
