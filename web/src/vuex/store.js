@@ -14,13 +14,18 @@ const state = {
 
 const mutations = {
   SEARCH_NOVELS (state, name) {
-    state.novels = [{
-      name: name,
-      author: 'test',
-      category: 'test',
-      word_num: 'test',
-      similarity: 'test'
-    }]
+    let url = '/api/search/' + name;
+    $.ajax({
+      type: "GET",
+      url: url,
+      dataType: "json",
+      success: (data) => {
+        state.novels = data;
+        if (data.length == 0){
+          alert("未找到" + name);
+        }
+      }
+    });
   }
 };
 

@@ -1,5 +1,5 @@
 <template>
-  <table class="table table-bordered">
+  <table class="table table-striped table-bordered">
     <thead>
       <tr>
         <td>书名</td>
@@ -15,7 +15,7 @@
         <td>{{ novel.author }}</td>
         <td>{{ novel.category }}</td>
         <td>{{ novel.word_num }}</td>
-        <td>{{ novel.similarity }}</td>
+        <td>{{ convert(novel.similarity) }}</td>
       </tr>
     </tbody>
   </table>
@@ -24,6 +24,11 @@
 <script>
   import {getNovels} from '../vuex/getters'
   export default {
+    methods: {
+      convert(similarity){
+        return Math.floor(similarity * 10000) / 100 + '%';
+      }
+    },
     vuex: {
       getters: {
         novels: getNovels
