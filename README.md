@@ -53,6 +53,11 @@ python RS/similarity_counter.py # 计算相似度
 ```
 
 ### web服务
+```
+cd web && npm install
+npm build               # 构建前端
+python main.py          # 启动web服务器
+```
 
 ## TODO
 - [ ] 1. 多核计算
