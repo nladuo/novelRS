@@ -24,7 +24,7 @@ mongoimport -d novel_rs -c novels  --file ./novels.dat
 ## 安装
 ### 配置
 修改lib/config.py
-```
+``` python
 config = {
     'timeout': 3,
     'db_user': '',          # 无密码
