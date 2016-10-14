@@ -1,19 +1,30 @@
 <template>
   <div class="form-group">
     <div class="input-group">
-      <input type="text" class="form-control" placeholder="请输入小说名称"/>
+      <input v-model="novel_name" type="text" class="form-control" placeholder="请输入小说名称"/>
       <div class="input-group-btn">
-        <button class=" btn btn-primary btn-block">搜索类似小说</button>
+        <button @click="search" class=" btn btn-primary btn-block">搜索类似小说</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import {searchNovels} from '../vuex/actions'
   export default {
-    data () {
+    data() {
       return {
-        msg: 'Hello World!'
+        novel_name: ""
+      }
+    },
+    vuex: {
+      actions: {
+        searchNovels
+      }
+    },
+    methods: {
+      search() {
+        this.searchNovels(this.novel_name)
       }
     }
   }

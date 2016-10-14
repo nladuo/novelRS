@@ -1,8 +1,8 @@
 <template>
   <div id="app" class="container">
-    <nav_bar></nav_bar>
+    <nav-bar></nav-bar>
     <search></search>
-    <novel_list></novel_list>
+    <novel-list></novel-list>
   </div>
 </template>
 
@@ -10,15 +10,14 @@
 import NovelList from './components/NovelList'
 import Search from './components/Search'
 import NavBar from './components/NavBar'
+import store from './vuex/store'
 
 export default {
-  methods: {
-
-  },
   components: {
-    nav_bar: NavBar,
-    search: Search,
-    novel_list: NovelList
-  }
+    NavBar,
+    Search,
+    NovelList
+  },
+  store
 }
 </script>

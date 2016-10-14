@@ -8,9 +8,24 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 const state = {
-  
+  novels: [],
+  newSearch: ""
+};
+
+const mutations = {
+  SEARCH_NOVELS (state, name) {
+    state.novels = [{
+      name: name,
+      author: 'test',
+      category: 'test',
+      word_num: 'test',
+      similarity: 'test'
+    }]
+  }
 };
 
 
-
-export default store;
+export default new Vuex.Store({
+  state,
+  mutations
+});
