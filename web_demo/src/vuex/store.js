@@ -8,8 +8,7 @@ import Vuex from 'vuex'
 Vue.use(Vuex);
 
 const state = {
-  novels: [],
-  newSearch: ""
+  novels: []
 };
 
 const mutations = {

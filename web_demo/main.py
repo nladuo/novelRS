@@ -26,7 +26,6 @@ def get_novels(name):
     })
     if novel is None:
         return []
-    print novel['name']
     result = []
     similarities = pickle.loads(str(novel['similarities']))
     print similarities
