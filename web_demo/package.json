@@ -1,7 +1,7 @@
 {
-  "name": "web",
+  "name": "web_demo",
   "version": "1.0.0",
-  "description": "Novel Recommend System web service.",
+  "description": "Novel Recommend System WebSite Demo.",
   "author": "nladuo <kalen25115@gmail.com>",
   "private": true,
   "scripts": {

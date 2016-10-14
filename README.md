@@ -1,10 +1,7 @@
 # novelRS
 一个简单的网络小说推荐系统，写着玩儿。
 
-## 状态
-正在构建中。。。
-
-## web技术
+## 网站Demo
 前端：vue+vuex <br>
 后端：flask <br>
 数据库：mongodb
@@ -64,9 +61,9 @@ python RS/similarity_counter.py # 计算相似度
 
 ### web服务
 ``` shell
-cd web && npm install
-npm run build           # 构建前端
-python main.py          # 启动web服务器
+cd web_demo && npm install
+npm run build               # 构建前端
+python main.py              # 启动web服务器
 ```
 
 ## TODO

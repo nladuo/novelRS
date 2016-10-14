@@ -1,6 +1,6 @@
-# web
+# web_demo
 
-> Novel Recommend System web service.
+> Novel Recommend System WebSite Demo.
 
 ## Build Setup
 
