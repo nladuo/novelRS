@@ -2,6 +2,7 @@
 
 
 class Novel:
+    """ 小说结构 """
     def __init__(self, name, author, category, word_num, url):
         self.name = name
         self.author = author
@@ -28,24 +29,8 @@ class Novel:
         }
 
 
-class Chapter:
-    def __init__(self, novel_id, name, url, content=''):
-        self.novel_id = novel_id
-        self.name = name
-        self.url = url
-        self.content = content
-
-    def dict(self):
-        return {
-            'novel_id': self.novel_id,
-            'name': self.name,
-            'url': self.url,
-            'content': self.content
-        }
-
-
 class FailedUrl:
-
+    """ 失败的链接 """
     def __init__(self, url):
         self.url = url
 

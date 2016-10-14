@@ -6,6 +6,7 @@ from config import *
 
 
 def init_client():
+    """ 初始化mongo客户端 """
     client = pymongo.MongoClient(config['db_host'], config['db_port'])
     if len(config['db_user']) != 0:
         admin = client['admin']
@@ -14,6 +15,7 @@ def init_client():
 
 
 def get_body(url):
+    """ 发送http请求 """
     retry_times = 0
     while retry_times < 3:
         try:
@@ -25,6 +27,7 @@ def get_body(url):
 
 
 def add_failed_url(db, url):
+    """ 把失败的url添加到数据库 """
     collection = db.failed_urls
     if collection.find({'url': url}).count() == 0:
         collection.insert(FailedUrl(url).dict())

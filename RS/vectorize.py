@@ -15,6 +15,7 @@ sys.setdefaultencoding('utf8')
 
 
 class Vectorize:
+    """ 章节内容向量化 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]

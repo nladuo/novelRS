@@ -13,7 +13,7 @@ sys.setdefaultencoding('utf8')
 
 
 class NovelCrawler:
-
+    """ 爬取小说基本信息 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]

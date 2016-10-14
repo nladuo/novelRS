@@ -19,7 +19,7 @@ sys.setdefaultencoding('utf8')
 
 
 class SimilarityCounter:
-
+    """ 在cluster内计算相似度 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]

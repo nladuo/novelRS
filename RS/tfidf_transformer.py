@@ -16,6 +16,7 @@ sys.setdefaultencoding('utf8')
 
 
 class MyTransformer:
+    """ 转换为tfidf向量 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]

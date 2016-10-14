@@ -17,6 +17,7 @@ sys.setdefaultencoding('utf8')
 
 
 class KMeansCluster:
+    """ KMeans聚类 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]

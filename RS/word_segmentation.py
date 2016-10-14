@@ -13,7 +13,7 @@ sys.setdefaultencoding('utf8')
 
 
 class WordSegmentation:
-
+    """ 使用jieba进行分词 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]

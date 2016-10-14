@@ -16,7 +16,7 @@ sys.setdefaultencoding('utf8')
 
 
 class ChapterCrawler:
-
+    """ 爬取小说的章节，存到数据库中 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]
@@ -37,6 +37,7 @@ class ChapterCrawler:
             if len(pre_chapters) <= 300:
                 self.__update_failed_novel(novel)
                 continue
+            # 使用协程提高效率
             tasks = []
             q = gevent.queue.Queue()
             chapter_count = 0
@@ -46,7 +47,7 @@ class ChapterCrawler:
                 if chapter_count > 100:      # 节省硬盘，每本小说只爬取前100章
                     break
             gevent.joinall(tasks)
-
+            # 把小说存到文件系统里
             novel_content = ''
             while not q.empty():
                 dict = q.get()
