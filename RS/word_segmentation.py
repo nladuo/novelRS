@@ -47,6 +47,7 @@ class WordSegmentation:
         })
 
     def __close(self):
+        """ 关闭数据库 """
         self.client.close()
 
     @staticmethod

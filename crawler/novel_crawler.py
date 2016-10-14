@@ -39,10 +39,12 @@ class NovelCrawler:
                 pass
 
     def __close(self):
+        """ 关闭数据库 """
         self.client.close()
 
     @staticmethod
     def __parse(html):
+        """ 解析小说 """
         novels = []
         bs_obj = BeautifulSoup(html)
         trs = bs_obj.find_all('tr', {'bgcolor': '#FFFFFF'})

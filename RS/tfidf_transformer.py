@@ -50,7 +50,7 @@ class MyTransformer:
         print "finished."
 
     def __update_novel(self, novel_id, vector):
-        """ 更新novel的is_vectorize和vector """
+        """ 更新novel的tfidf_vector """
         self.collection.update({'_id': ObjectId(novel_id)}, {
             '$set': {
                 'tfidf_vector': vector
@@ -75,6 +75,7 @@ class MyTransformer:
 
     @staticmethod
     def __get_vectorizer():
+        """ 读取vectorizer.dat """
         f = open('vectorizer.dat', 'r')
         vectorizer = pickle.load(f)
         f.close()

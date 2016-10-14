@@ -117,6 +117,7 @@ class ChapterCrawler:
         f.close()
         print "saving ", './corpus/' + filename
 
+
 if __name__ == '__main__':
     crawler = ChapterCrawler()
     crawler.run()
