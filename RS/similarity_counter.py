@@ -4,8 +4,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import operator
-import cPickle
+import cPickle as pickle
 import sys
+import json
 from datetime import datetime
 from bson.objectid import ObjectId
 sys.path.append("../")
@@ -27,44 +28,33 @@ class SimilarityCounter:
         self.novels = self.collection.find({
             'success': True,
             'is_segment': True,
+            'is_vectorize': True
         })
 
     def run(self):
         novel_set = {}
         # 先把数据都读到内存里
         for novel in self.novels:
-            n = Novel(
-                novel['name'],
-                novel['author'],
-                novel['category'],
-                novel['word_num'],
-                novel['url'],
-                novel['is_crawled'],
-                novel['success'],
-                novel['is_segment'],
-                novel['is_compute']
-            )
-            n._id = novel['_id']
-            if not novel['category'] in novel_set:
-                novel_set[novel['category']] = []
-            novel_set[novel['category']].append(n)
+            if not novel['cluster'] in novel_set:   # 根据cluster来计算相似度
+                novel_set[novel['cluster']] = []
+            novel_set[novel['cluster']].append(novel)
+
         count = 1       # 记录计算了几个
-        # 开始分割
-        for category, novels in novel_set.items():
+        for cluster, novels in novel_set.items():
             for n in novels:
-                if n.is_compute:    # 计算过相似度的就不再计算了
+                if n['is_compute']:    # 计算过相似度的就不再计算了
                     continue
-                nid = str(n._id)
+                nid = str(n['_id'])
                 before_exec_time = datetime.now()
                 similarities = []     # 保存所有的相似度
-                content = self.__read_file(nid)
-                print count, '---->', nid, "  ", n.name, "   ", category
+                vector = json.loads(n['tfidf_vector'])
+                print count, '---->', nid, "  ", n['name'], "  cluster:", cluster
                 for n2 in novels:
-                    nid2 = str(n2._id)
+                    nid2 = str(n2['_id'])
                     if nid == nid2:
                         continue
-                    content2 = self.__read_file(nid2)
-                    similarity = self.__get_cosine_similarity(content, content2)
+                    vector2 = json.loads(n2['tfidf_vector'])
+                    similarity = self.__get_cosine_similarity(vector, vector2)
                     similarities.append(Similarity(nid2, similarity))
                 # 对相似度进行排序，把前30个更新到数据库中
                 similarities.sort(key=operator.attrgetter("similarity"), reverse=True)
@@ -85,7 +75,7 @@ class SimilarityCounter:
 
     def __update_novel_similarities(self, novel_id, similarities):
         """ 更新novel集合的similarities和is_compute """
-        similarities_str = cPickle.dumps(similarities[0: 30])
+        similarities_str = pickle.dumps(similarities[0: 30])
         self.collection.update({'_id': ObjectId(novel_id)}, {
             '$set': {
                 'similarities': similarities_str,
@@ -97,25 +87,12 @@ class SimilarityCounter:
         self.client.close()
 
     @staticmethod
-    def __get_cosine_similarity(text1, text2):
+    def __get_cosine_similarity(vector1, vector2):
         """ 获取余弦相似度 """
-        vectorizer = CountVectorizer()
-        X = vectorizer.fit_transform([text1, text2]).toarray()
-        vec1 = np.array(X[0]).reshape(1, -1)
-        vec2 = np.array(X[1]).reshape(1, -1)
+        vec1 = np.array(vector1).reshape(1, -1)
+        vec2 = np.array(vector2).reshape(1, -1)
+        # return cosine_similarity(vector1, vector2)[0][0]
         return cosine_similarity(vec1, vec2)[0][0]
-
-    @staticmethod
-    def __read_file(novel_id):
-        """ 读取文件 """
-        filename = './seg_corpus/' + novel_id + '.txt'
-        if os.path.exists(filename):
-            f = open(filename, "rb")
-            text = f.read()
-            f.close()
-            return text
-        else:
-            raise Exception('文件：' + filename + " 不存在")
 
 
 if __name__ == '__main__':

@@ -26,25 +26,13 @@ class ChapterCrawler:
         novels = []
         # 先把数据都读到内存里
         for novel in self.novels:
-            n = Novel(
-                novel['name'],
-                novel['author'],
-                novel['category'],
-                novel['word_num'],
-                novel['url'],
-                novel['is_crawled'],
-                novel['success'],
-                novel['is_segment'],
-                novel['is_compute']
-            )
-            n._id = novel['_id']
-            novels.append(n)
+            novels.append(novel)
 
         for novel in novels:
-            print "scraping", novel._id, novel.name, novel.author, \
+            print "scraping", novel['_id'], novel['name'], novel['author'], \
                 time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
-            html = get_body(novel.url)
-            pre_chapters = self.__parse_chapters(novel._id, novel.url, html)
+            html = get_body(novel['url'])
+            pre_chapters = self.__parse_chapters(novel['_id'], novel['url'], html)
             # 小于300章的小说不进行统计，把novel的success设为0
             if len(pre_chapters) <= 300:
                 self.__update_failed_novel(novel)
@@ -55,7 +43,7 @@ class ChapterCrawler:
             for chapter in pre_chapters:
                 tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
                 chapter_count += 1
-                if chapter_count > 50:      # 节省硬盘，每本小说只爬取前50章
+                if chapter_count > 100:      # 节省硬盘，每本小说只爬取前100章
                     break
             gevent.joinall(tasks)
 
@@ -70,7 +58,7 @@ class ChapterCrawler:
                 try:
                     content = self.__parse_chapter_content(body)
                     novel_content += content
-                except:
+                except Exception:
                     pass
             self.__save_novel(novel, novel_content)
             self.__update_novel(novel)  # 把novel的is_crawled设为1
@@ -78,31 +66,32 @@ class ChapterCrawler:
         self.__close()
 
     def __update_novel(self, novel):
-        self.db.novels.update({'_id': novel._id}, {
+        """ 把小说设置为已经爬去取过 """
+        self.db.novels.update({'_id': novel['_id']}, {
             '$set': {'is_crawled': True},
         })
 
     def __update_failed_novel(self, novel):
-        self.db.novels.update({'_id': novel._id}, {
+        """ 把小说设置为爬取失败 """
+        self.db.novels.update({'_id': novel['_id']}, {
             '$set': {'success': False},
         })
         self.__update_novel(novel)
 
     def __close(self):
+        """ 关闭数据库 """
         self.client.close()
 
     @staticmethod
-    def __split_pre_chapters(pre_chapters, num=100):
-        return [pre_chapters[i: i + num] for i in range(len(pre_chapters)) if i % num == 0]
-
-    @staticmethod
     def __async_get_chapter_content(chapter, q):
+        """ 异步请求小说内容 """
         body = get_body(chapter.url)
         q.put({'chapter': chapter, 'body': body})
         print chapter.url
 
     @staticmethod
     def __parse_chapters(_id, url, html):
+        """ 解析小说章节 """
         chapters = []
         bs_obj = BeautifulSoup(html)
         tds = bs_obj.find_all('td', {'class', 'L'})
@@ -113,6 +102,7 @@ class ChapterCrawler:
 
     @staticmethod
     def __parse_chapter_content(html):
+        """ 解析小说内容 """
         bs_obj = BeautifulSoup(html)
         contents = bs_obj.find('dd', {'id': 'contents'})
         # print contents.text
@@ -120,7 +110,8 @@ class ChapterCrawler:
 
     @staticmethod
     def __save_novel(novel, novel_content):
-        filename = str(novel._id) + ".txt"
+        """ 保存在文件系统 """
+        filename = str(novel['_id']) + ".txt"
         f = open('./corpus/' + filename, 'w')
         f.write(novel_content)
         f.close()

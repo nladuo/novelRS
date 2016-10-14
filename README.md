@@ -13,6 +13,14 @@
 mongoimport -d novel_rs -c novels  --file ./novels.dat
 ```
 
+## 算法步骤
+1、爬取数据<br>
+2、使用jieba分词<br>
+3、小说内容向量化<br>
+4、转换为td-idf向量<br>
+5、k-means聚类减小复杂度<br>
+6、计算相似度<br>
+
 ## 安装
 ### 配置
 修改lib/config.py
@@ -30,19 +38,24 @@ config = {
 
 ### 爬虫
 ``` shell
-python crawler/novel_crawler.py
-python crawler/chap
-
+python crawler/novel_crawler.py     # 爬取小说
+python crawler/chapter_crawler.py   # 爬去小说章节
 ```
 
 ### 推荐系统
+``` shell
+python RS/word_segmentation.py  # 爬取小说
+python RS/get_vectorizer.py     # 爬去小说章节
+python RS/vectorize.py          # 向量化
+python RS/tdidf_transformer.py  # 转换为tf-idf向量
+python RS/kmeans_cluster.py     # 聚类减小复杂度
+python RS/similarity_counter.py # 计算相似度
+```
 
 ### web服务
 
 ## TODO
-- [ ] 1. 使用TF-IDF对corpus向量化.
-- [ ] 2. 分词时添加停用词.
-- [ ] 3. 多核计算相似度
+- [ ] 1. 多核计算
 
 ## LICENSE
 MIT

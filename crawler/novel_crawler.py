@@ -21,7 +21,7 @@ class NovelCrawler:
         self.collection.ensure_index('url', unique=True)
 
     def run(self):
-        for i in range(1, 647):
+        for i in range(1, 641):             # 爬取1-640页
             print ".....................正在爬取第", i, "页....................."
             url = "http://www.23wx.com/quanben/" + str(i)
             html = get_body(url)
@@ -55,7 +55,7 @@ class NovelCrawler:
             category = bs_obj2.find_all('td')[0].text.strip()
             word_num = bs_obj2.find_all('td')[4].text
             author = tds[2].text
-            novels.append(Novel(name, author, category, word_num, url, False, True, False, False))
+            novels.append(Novel(name, author, category, word_num, url))
             print name, author, category, word_num, url
         return novels
 

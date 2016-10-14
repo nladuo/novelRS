@@ -2,17 +2,12 @@
 
 
 class Novel:
-    def __init__(self, name, author, category, word_num, url,
-                 is_crawled, success, is_segment, is_compute):
+    def __init__(self, name, author, category, word_num, url):
         self.name = name
         self.author = author
         self.category = category
         self.word_num = word_num
         self.url = url
-        self.is_crawled = is_crawled    # 是否爬取过章节
-        self.success = success          # 爬取章节是否成功
-        self.is_segment = is_segment    # 有没有分割过
-        self.is_compute = is_compute    # 有没有计算过相似度
 
     def dict(self):
         return {
@@ -21,11 +16,15 @@ class Novel:
             'category': self.category,
             'word_num': self.word_num,
             'url': self.url,
-            'is_crawled': self.is_crawled,
-            'success': self.success,
-            'is_segment': self.is_segment,
-            'is_compute': self.is_compute,
-            'similarities': ""          # 记录相似的小说
+            'is_crawled': False,                # 是否爬取过章节
+            'success': True,                    # 爬取章节是否成功
+            'is_segment': False,                # 有没有分割过
+            'is_vectorize': False,              # 有没有向量化
+            'vector': '[]',                     # 向量化
+            'tfidf_vector': '[]',               # tf-idf向量化
+            'is_compute': False,                # 有没有计算过相似度
+            'cluster': -1,                      # 聚类的类别
+            'similarities': ""                  # 记录相似的小说
         }
 
 
