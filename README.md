@@ -19,9 +19,8 @@ mongoimport -d novelRS -c novels  --file ./novels.dat
 1、爬取数据<br>
 2、使用jieba分词<br>
 3、小说内容向量化<br>
-4、转换为td-idf向量<br>
-5、k-means聚类减小复杂度<br>
-6、计算相似度<br>
+4、k-means聚类减小复杂度<br>
+5、计算相似度<br>
 
 ## 安装
 ### 配置
@@ -51,8 +50,7 @@ python crawler/chapter_crawler.py   # 爬去小说章节
 
 ### 推荐系统
 ``` shell
-python RS/word_segmentation.py  # 爬取小说
-python RS/get_vectorizer.py     # 爬去小说章节
+python RS/word_segmentation.py  # 分词
 python RS/vectorize.py          # 向量化
 python RS/kmeans_cluster.py     # 聚类减小复杂度
 python RS/similarity_counter.py # 计算相似度

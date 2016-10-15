@@ -14,7 +14,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-class Vectorize:
+class Vectorizer:
     """ 章节内容向量化 """
     def __init__(self):
         self.client = init_client()
@@ -78,5 +78,5 @@ class Vectorize:
 
 
 if __name__ == '__main__':
-    vectorize = Vectorize()
-    vectorize.run()
+    vectorizer = Vectorizer()
+    vectorizer.run()
