@@ -1,6 +1,9 @@
 # novelRS
 一个简单的网络小说推荐系统，写着玩儿。
 
+## 状态
+正在构建中.....
+
 ## 网站Demo
 前端：vue+vuex <br>
 后端：flask <br>
@@ -51,7 +54,7 @@ python crawler/chapter_crawler.py   # 爬去小说章节
 ### 推荐系统
 ``` shell
 python RS/word_segmentation.py  # 分词
-python RS/vectorize.py          # 向量化
+python RS/vectorizer.py          # 向量化
 python RS/kmeans_cluster.py     # 聚类减小复杂度
 python RS/similarity_counter.py # 计算相似度
 ```
