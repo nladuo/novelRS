@@ -2,7 +2,7 @@
 import jieba
 import os
 import sys
-import json
+import cPickle as pickle
 from bson.objectid import ObjectId
 sys.path.append("../")
 from lib.config import *
@@ -22,7 +22,7 @@ class WordSegmentation:
         self.collection.ensure_index('url', unique=True)
         self.novels = self.collection.find({
             'success': True,
-            # 'is_segment': False
+            'is_segment': False
         })
         self.vocabulary = []
 
@@ -38,7 +38,7 @@ class WordSegmentation:
             text = self.__segment(text)
             self.__save_file(str(novel['_id']), text)
             self.__update_novel(novel['_id'])
-            print 'vocabulary num:', len(self.vocabulary)
+            print 'vocabulary size:', len(self.vocabulary)
         # 关闭数据库
         self.__close()
         print 'saving vocabulary...'
@@ -65,7 +65,7 @@ class WordSegmentation:
 
     def __save_vocabulary(self):
         f = open('vocabulary.dat', "wb")
-        f.write(json.dumps(self.vocabulary))
+        pickle.dump(list(self.vocabulary), f)
         f.close()
 
     @staticmethod

@@ -9,6 +9,7 @@ sys.path.append("../")
 from lib.model import *
 from lib.utils import *
 from lib.config import *
+from lib.stop_words import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -24,6 +25,7 @@ class Vectorizer:
         self.novels = self.collection.find({
             'success': True,
             'is_segment': True,
+            'is_vectorize': False
         })
 
     def run(self):
@@ -31,25 +33,24 @@ class Vectorizer:
         # 先把数据都读到内存里
         for novel in self.novels:
             novels.append(novel)
-        # 读取vectorizer.dat
-        vectorizer = self.__get_vectorizer()
+        vectorizer = CountVectorizer(stop_words=stop_words, vocabulary=self.__get_vocabulary())
         # 开始分割
         for novel in novels:
             print "vectorizing ", novel['_id'], novel['name']
             text = self.__read_file(str(novel['_id']))
             X = vectorizer.transform([text])
             vector = json.dumps(X.toarray().tolist()[0])
-            self.__update_novel(novel['_id'], vector)
+            self.__save_file(novel['_id'], vector)
+            self.__update_novel(novel['_id'])
         # 关闭数据库
         self.__close()
         print "finished. all documents has been vectorized."
 
-    def __update_novel(self, novel_id, vector):
-        """ 更新novel的is_vectorize和vector """
+    def __update_novel(self, novel_id):
+        """ 更新novel的is_vectorize """
         self.collection.update({'_id': ObjectId(novel_id)}, {
             '$set': {
-                'is_vectorize': True,
-                'vector': vector
+                'is_vectorize': True
             },
         })
 
@@ -60,7 +61,7 @@ class Vectorizer:
     @staticmethod
     def __read_file(_id):
         """ 读取corpus """
-        filename = '../crawler/corpus/' + _id + '.txt'
+        filename = './seg_corpus/' + _id + '.txt'
         if os.path.exists(filename):
             f = open(filename, "rb")
             text = f.read()
@@ -70,11 +71,19 @@ class Vectorizer:
             raise Exception('文件：' + filename + " 不存在")
 
     @staticmethod
-    def __get_vectorizer():
-        f = open('vectorizer.dat', 'r')
-        vectorizer = pickle.load(f)
+    def __save_file(_id, text):
+        """ 保存到vectors """
+        filename = 'vectors/' + str(_id) + '.dat'
+        f = open(filename, "wb")
+        f.write(text)
         f.close()
-        return vectorizer
+
+    @staticmethod
+    def __get_vocabulary():
+        f = open('vocabulary.dat', 'r')
+        vocabulary = pickle.load(f)
+        f.close()
+        return vocabulary
 
 
 if __name__ == '__main__':
