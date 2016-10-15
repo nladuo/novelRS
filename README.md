@@ -54,7 +54,6 @@ python crawler/chapter_crawler.py   # 爬去小说章节
 python RS/word_segmentation.py  # 爬取小说
 python RS/get_vectorizer.py     # 爬去小说章节
 python RS/vectorize.py          # 向量化
-python RS/tfidf_transformer.py  # 转换为tf-idf向量
 python RS/kmeans_cluster.py     # 聚类减小复杂度
 python RS/similarity_counter.py # 计算相似度
 ```
@@ -68,6 +67,8 @@ python main.py              # 启动web服务器
 
 ## TODO
 - [ ] 1. 多核计算
+- [ ] 2. 使用TD-IDF向量
+
 
 ## LICENSE
 MIT

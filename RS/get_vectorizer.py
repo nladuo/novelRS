@@ -11,8 +11,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 if __name__ == '__main__':
-    """ 对500本小说进行向量化，提取feature_names"""
-    MAX_FILES_NUM = 500     # 随机提取500本小说
+    """ 对2000本小说进行向量化，提取feature_names"""
+    MAX_FILES_NUM = 2000     # 随机提取2000本小说
 
     filenames = os.listdir('./seg_corpus')
     random.shuffle(filenames)

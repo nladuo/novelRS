@@ -16,6 +16,31 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
+class IterableVectors:
+    """ 节省内存空间 """
+
+    def __init__(self, ids, collection):
+        self.index = -1
+        self.ids = ids
+        self.collection = collection
+        self.vector = None
+
+    def __iter__(self):
+        return self
+
+    def __update_vector(self):
+        _id = self.ids[self.index]
+        novel = self.collection.find_one({'_id': ObjectId(_id)})
+        self.vector = novel['vector']
+
+    def next(self):
+        self.index += 1
+        if self.index == len(self.ids):
+            raise StopIteration()
+        self.__update_vector()
+        return self.vector
+
+
 class KMeansCluster:
     """ KMeans聚类 """
     def __init__(self):
@@ -30,17 +55,13 @@ class KMeansCluster:
         })
 
     def run(self):
-        novels = []
-        # 先把数据都读到内存里
+        ids = []
+        # 先把数据的id读取到
         for novel in self.novels:
-            novels.append(novel)
-        X = []
-        # 读取tfidf向量
-        for novel in novels:
-            X.append(json.loads(novel['tfidf_vector']))
-        X = np.array(X)     # 转换为numpy的数组
+            ids.append(novel['_id'])
 
-        num_clusters = int(len(novels) / 500) + 1   # 平均每个cluster中500本小说
+        X = IterableVectors(ids, self.collection)
+        num_clusters = int(len(ids) / 500) + 1   # 平均每个cluster中500本小说
         print "num_clusters = ", num_clusters
         print "starting clustering..."
         km = KMeans(n_clusters=num_clusters, init='random', n_init=1, verbose=1)
@@ -48,9 +69,9 @@ class KMeansCluster:
 
         # 存到数据库中
         print "saving into database..."
-        for i, novel in enumerate(novels):
+        for i, _id in enumerate(ids):
             cluster = int(km.labels_[i])
-            self.__update_novel(novel['_id'], cluster)
+            self.__update_novel(_id, cluster)
         # 关闭数据库
         self.__close()
         print "finished."

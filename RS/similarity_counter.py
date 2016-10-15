@@ -47,13 +47,13 @@ class SimilarityCounter:
                 nid = str(n['_id'])
                 before_exec_time = datetime.now()
                 similarities = []     # 保存所有的相似度
-                vector = json.loads(n['tfidf_vector'])
+                vector = json.loads(n['vector'])
                 print count, '---->', nid, "  ", n['name'], "  cluster:", cluster
                 for n2 in novels:
                     nid2 = str(n2['_id'])
                     if nid == nid2:
                         continue
-                    vector2 = json.loads(n2['tfidf_vector'])
+                    vector2 = json.loads(n2['vector'])
                     similarity = self.__get_cosine_similarity(vector, vector2)
                     similarities.append(Similarity(nid2, similarity))
                 # 对相似度进行排序，把前30个更新到数据库中

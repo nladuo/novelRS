@@ -2,4 +2,4 @@
 *.log
 test.py
 1.txt
-vectorizer.dat
+*.dat
