@@ -1,6 +1,5 @@
 # coding=utf-8
 import os
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import operator
@@ -47,13 +46,13 @@ class SimilarityCounter:
                 nid = str(n['_id'])
                 before_exec_time = datetime.now()
                 similarities = []     # 保存所有的相似度
-                vector = json.loads(n['vector'])
+                vector = self.__get_vector_by_id(nid)
                 print count, '---->', nid, "  ", n['name'], "  cluster:", cluster
                 for n2 in novels:
                     nid2 = str(n2['_id'])
                     if nid == nid2:
                         continue
-                    vector2 = json.loads(n2['vector'])
+                    vector2 = self.__get_vector_by_id(nid2)
                     similarity = self.__get_cosine_similarity(vector, vector2)
                     similarities.append(Similarity(nid2, similarity))
                 # 对相似度进行排序，把前30个更新到数据库中
@@ -88,11 +87,28 @@ class SimilarityCounter:
         self.client.close()
 
     @staticmethod
+    def __get_vector_by_id(_id):
+        text = SimilarityCounter.__read_file(_id)
+        return json.loads(text)
+
+    @staticmethod
+    def __read_file(_id):
+        """ 读取corpus """
+        filename = './vectors/' + str(_id) + '.dat'
+        if os.path.exists(filename):
+            f = open(filename, "rb")
+            text = f.read()
+            f.close()
+            return text
+        else:
+            raise Exception('文件：' + filename + " 不存在")
+
+    @staticmethod
     def __get_cosine_similarity(vector1, vector2):
         """ 获取余弦相似度 """
         vec1 = np.array(vector1).reshape(1, -1)
         vec2 = np.array(vector2).reshape(1, -1)
-        # return cosine_similarity(vector1, vector2)[0][0]
+
         return cosine_similarity(vec1, vec2)[0][0]
 
 

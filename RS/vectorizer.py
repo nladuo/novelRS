@@ -86,15 +86,15 @@ class Vectorizer:
             vectorizer = pickle.load(f)
             f.close()
         else:
-            # 对1000本小说进行向量化，提取feature_names
-            MAX_FILES_NUM = 1000
+            # 对其中的500本小说进行向量化，提取feature_names
+            MAX_FILES_NUM = 500
             filenames = os.listdir('./seg_corpus')
             random.shuffle(filenames)
             print "loading dataset...."
-            files = [open('./seg_corpus/' + filename).read()
+            contents = [open('./seg_corpus/' + filename).read()
                         for i, filename in enumerate(filenames) if i < MAX_FILES_NUM]
-            vectorizer = CountVectorizer(stop_words=stop_words, min_df=10, max_df=200)
-            vectorizer.fit(files)
+            vectorizer = CountVectorizer(stop_words=stop_words, min_df=20, max_df=300)
+            vectorizer.fit(contents)
             # 保存vectorizer
             f = open('vectorizer.dat', 'w')
             pickle.dump(vectorizer, f)

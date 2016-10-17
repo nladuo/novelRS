@@ -1,11 +1,9 @@
 # coding=utf-8
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
 import sys
 import cPickle as pickle
 import json
 import os
-import numpy as np
 from bson.objectid import ObjectId
 sys.path.append("../")
 from lib.model import *
@@ -39,13 +37,15 @@ class KMeansCluster:
         num_clusters = int(len(ids) / 500) + 1   # 平均每个cluster中500本小说
         print "num_clusters = ", num_clusters
         print "starting clustering..."
-        km = KMeans(n_clusters=num_clusters, init='random', n_init=1, verbose=1)
-        km.fit(X)
+        mbk = MiniBatchKMeans(init='k-means++', n_clusters=num_clusters, batch_size=100,
+                      n_init=10, max_no_improvement=10, verbose=1,
+                      random_state=0)
+        mbk.fit(X)
 
         # 存到数据库中
         print "saving into database..."
         for i, _id in enumerate(ids):
-            cluster = int(km.labels_[i])
+            cluster = int(mbk.labels_[i])
             self.__update_novel(_id, cluster)
         # 关闭数据库
         self.__close()
