@@ -16,31 +16,6 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-class IterableVectors:
-    """ 节省内存空间 """
-
-    def __init__(self, ids, collection):
-        self.index = -1
-        self.ids = ids
-        self.collection = collection
-        self.vector = None
-
-    def __iter__(self):
-        return self
-
-    def __update_vector(self):
-        _id = self.ids[self.index]
-        novel = self.collection.find_one({'_id': ObjectId(_id)})
-        self.vector = novel['vector']
-
-    def next(self):
-        self.index += 1
-        if self.index == len(self.ids):
-            raise StopIteration()
-        self.__update_vector()
-        return self.vector
-
-
 class KMeansCluster:
     """ KMeans聚类 """
     def __init__(self):
@@ -59,8 +34,8 @@ class KMeansCluster:
         # 先把数据的id读取到
         for novel in self.novels:
             ids.append(novel['_id'])
-
-        X = IterableVectors(ids, self.collection)
+        print 'loading dataset....'
+        X = self.__load_dataset(ids)
         num_clusters = int(len(ids) / 500) + 1   # 平均每个cluster中500本小说
         print "num_clusters = ", num_clusters
         print "starting clustering..."
@@ -76,12 +51,19 @@ class KMeansCluster:
         self.__close()
         print "finished."
 
+    def __load_dataset(self, ids):
+        dataset = []
+        for _id in ids:
+            text = self.__read_file(_id)
+            dataset.append(json.loads(text))
+        return dataset
+
     def __update_novel(self, novel_id, cluster):
         """ 更新novel的cluster """
         self.collection.update({'_id': ObjectId(novel_id)}, {
             '$set': {
                 'cluster': cluster
-            },
+            }
         })
 
     def __close(self):
@@ -91,7 +73,7 @@ class KMeansCluster:
     @staticmethod
     def __read_file(_id):
         """ 读取corpus """
-        filename = '../crawler/corpus/' + _id + '.txt'
+        filename = './vectors/' + str(_id) + '.dat'
         if os.path.exists(filename):
             f = open(filename, "rb")
             text = f.read()

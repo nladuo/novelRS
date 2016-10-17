@@ -2,6 +2,7 @@
 from sklearn.feature_extraction.text import CountVectorizer
 import sys
 import cPickle as pickle
+import random
 import json
 import os
 from bson.objectid import ObjectId
@@ -33,7 +34,7 @@ class Vectorizer:
         # 先把数据都读到内存里
         for novel in self.novels:
             novels.append(novel)
-        vectorizer = CountVectorizer(stop_words=stop_words, vocabulary=self.__get_vocabulary())
+        vectorizer = self.__get_vectorizer()
         # 开始分割
         for novel in novels:
             print "vectorizing ", novel['_id'], novel['name']
@@ -79,11 +80,28 @@ class Vectorizer:
         f.close()
 
     @staticmethod
-    def __get_vocabulary():
-        f = open('vocabulary.dat', 'r')
-        vocabulary = pickle.load(f)
-        f.close()
-        return vocabulary
+    def __get_vectorizer():
+        if os.path.exists('vectorizer.dat'):
+            f = open('vectorizer.dat', 'r')
+            vectorizer = pickle.load(f)
+            f.close()
+        else:
+            # 对1000本小说进行向量化，提取feature_names
+            MAX_FILES_NUM = 1000
+            filenames = os.listdir('./seg_corpus')
+            random.shuffle(filenames)
+            print "loading dataset...."
+            files = [open('./seg_corpus/' + filename).read()
+                        for i, filename in enumerate(filenames) if i < MAX_FILES_NUM]
+            vectorizer = CountVectorizer(stop_words=stop_words, min_df=10, max_df=200)
+            vectorizer.fit(files)
+            # 保存vectorizer
+            f = open('vectorizer.dat', 'w')
+            pickle.dump(vectorizer, f)
+            f.close()
+
+        print 'vocabulary num:', len(vectorizer.vocabulary_)
+        return vectorizer
 
 
 if __name__ == '__main__':

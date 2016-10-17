@@ -55,7 +55,7 @@ python crawler/chapter_crawler.py   # 爬去小说章节
 ``` shell
 python RS/word_segmentation.py  # 分词
 python RS/vectorizer.py          # 向量化
-python RS/kmeans_cluster.py     # 聚类减小复杂度
+python RS/kmeans_cluster.py     # 聚类减小复杂度, 此步骤需要大概3-4G内存
 python RS/similarity_counter.py # 计算相似度
 ```
 

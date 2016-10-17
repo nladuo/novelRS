@@ -2,7 +2,6 @@
 import jieba
 import os
 import sys
-import cPickle as pickle
 from bson.objectid import ObjectId
 sys.path.append("../")
 from lib.config import *
@@ -24,7 +23,6 @@ class WordSegmentation:
             'success': True,
             'is_segment': False
         })
-        self.vocabulary = []
 
     def run(self):
         novels = []
@@ -38,17 +36,16 @@ class WordSegmentation:
             text = self.__segment(text)
             self.__save_file(str(novel['_id']), text)
             self.__update_novel(novel['_id'])
-            print 'vocabulary size:', len(self.vocabulary)
         # 关闭数据库
         self.__close()
-        print 'saving vocabulary...'
-        self.__save_vocabulary()
         print "word segmentation finished."
 
     def __update_novel(self, novel_id):
         """ 更新is_segment """
         self.db.novels.update({'_id': ObjectId(novel_id)}, {
-            '$set': {'is_segment': True},
+            '$set': {
+                'is_segment': True
+            }
         })
 
     def __close(self):
@@ -58,15 +55,7 @@ class WordSegmentation:
     def __segment(self, text):
         """ 用结巴分词 """
         words = jieba.cut_for_search(text)
-        segmented_txt = " ".join(words)
-        self.vocabulary = list(self.vocabulary)
-        self.vocabulary = set(self.vocabulary + segmented_txt.split(' '))
-        return segmented_txt
-
-    def __save_vocabulary(self):
-        f = open('vocabulary.dat', "wb")
-        pickle.dump(list(self.vocabulary), f)
-        f.close()
+        return " ".join(words)
 
     @staticmethod
     def __read_file(_id):
