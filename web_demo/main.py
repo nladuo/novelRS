@@ -35,6 +35,8 @@ def get_novels(name):
             'success': True,
             'is_compute': True
         })
+        if novel is None:
+            continue
         n = {
             'name': novel['name'],
             'author': novel['author'],
