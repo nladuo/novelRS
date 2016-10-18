@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import print_function
 import jieba
 import os
 import sys
@@ -21,7 +22,7 @@ class WordSegmentation:
         self.collection.ensure_index('url', unique=True)
         self.novels = self.collection.find({
             'success': True,
-            'is_segment': False
+            # 'is_segment': False
         })
 
     def run(self):
@@ -31,14 +32,14 @@ class WordSegmentation:
             novels.append(novel)
         # 开始分割
         for novel in novels:
-            print "spliting ", novel['_id'], novel['name']
+            print("spliting ", novel['_id'], novel['name'])
             text = self.__read_file(str(novel['_id']))
             text = self.__segment(text)
             self.__save_file(str(novel['_id']), text)
             self.__update_novel(novel['_id'])
         # 关闭数据库
         self.__close()
-        print "word segmentation finished."
+        print("word segmentation finished.")
 
     def __update_novel(self, novel_id):
         """ 更新is_segment """
@@ -54,7 +55,7 @@ class WordSegmentation:
 
     def __segment(self, text):
         """ 用结巴分词 """
-        words = jieba.cut_for_search(text)
+        words = jieba.cut(text)
         return " ".join(words)
 
     @staticmethod

@@ -1,5 +1,6 @@
 # coding=utf-8
-from sklearn.feature_extraction.text import CountVectorizer
+from __future__ import print_function
+from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
 import cPickle as pickle
 import random
@@ -25,8 +26,7 @@ class Vectorizer:
         self.collection.ensure_index('url', unique=True)
         self.novels = self.collection.find({
             'success': True,
-            'is_segment': True,
-            'is_vectorize': False
+            'is_segment': True
         })
 
     def run(self):
@@ -34,18 +34,21 @@ class Vectorizer:
         # 先把数据都读到内存里
         for novel in self.novels:
             novels.append(novel)
-        vectorizer = self.__get_vectorizer()
-        # 开始分割
-        for novel in novels:
-            print "vectorizing ", novel['_id'], novel['name']
-            text = self.__read_file(str(novel['_id']))
-            X = vectorizer.transform([text])
-            vector = json.dumps(X.toarray().tolist()[0])
+
+        files = [open('./seg_corpus/' + str(novel['_id']) + '.txt')
+                        for novel in novels]
+        vectorizer = TfidfVectorizer(stop_words=stop_words, min_df=10, max_df=500, input='file')
+        print("start vectorizing...")
+        X = vectorizer.fit_transform(files).toarray()
+        # 开始保存
+        for (i, novel) in enumerate(novels):
+            print("saving", novel['name'])
+            vector = json.dumps(X[i].tolist())
             self.__save_file(novel['_id'], vector)
             self.__update_novel(novel['_id'])
         # 关闭数据库
         self.__close()
-        print "finished. all documents has been vectorized."
+        print("finished. all documents has been vectorized.")
 
     def __update_novel(self, novel_id):
         """ 更新novel的is_vectorize """
@@ -90,17 +93,17 @@ class Vectorizer:
             MAX_FILES_NUM = 500
             filenames = os.listdir('./seg_corpus')
             random.shuffle(filenames)
-            print "loading dataset...."
+            print("loading dataset....")
             contents = [open('./seg_corpus/' + filename).read()
                         for i, filename in enumerate(filenames) if i < MAX_FILES_NUM]
-            vectorizer = CountVectorizer(stop_words=stop_words, min_df=20, max_df=300)
+            vectorizer = TfidfVectorizer(stop_words=stop_words, min_df=20, max_df=300)
             vectorizer.fit(contents)
             # 保存vectorizer
             f = open('vectorizer.dat', 'w')
             pickle.dump(vectorizer, f)
             f.close()
 
-        print 'vocabulary num:', len(vectorizer.vocabulary_)
+        print('vocabulary num:', len(vectorizer.vocabulary_) )
         return vectorizer
 
 

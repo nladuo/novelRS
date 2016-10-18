@@ -1,5 +1,5 @@
 # coding=utf-8
-
+from __future__ import print_function
 from bs4 import BeautifulSoup
 import sys
 sys.path.append("../")
@@ -22,7 +22,7 @@ class NovelCrawler:
 
     def run(self):
         for i in range(1, 641):             # 爬取1-640页
-            print ".....................正在爬取第", i, "页....................."
+            print(".....................正在爬取第", i, "页.....................")
             url = "http://www.23wx.com/quanben/" + str(i)
             html = get_body(url)
             if html == '':
@@ -58,11 +58,11 @@ class NovelCrawler:
             word_num = bs_obj2.find_all('td')[4].text
             author = tds[2].text
             novels.append(Novel(name, author, category, word_num, url))
-            print name, author, category, word_num, url
+            print(name, author, category, word_num, url)
         return novels
 
 
 if __name__ == '__main__':
     crawler = NovelCrawler()
     crawler.run()
-    print "novel_crawler has been finished."
+    print("novel_crawler has been finished.")

@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import print_function
 from sklearn.cluster import MiniBatchKMeans
 import sys
 import cPickle as pickle
@@ -32,24 +33,24 @@ class KMeansCluster:
         # 先把数据的id读取到
         for novel in self.novels:
             ids.append(novel['_id'])
-        print 'loading dataset....'
+        print('loading dataset....')
         X = self.__load_dataset(ids)
-        num_clusters = int(len(ids) / 500) + 1   # 平均每个cluster中500本小说
-        print "num_clusters = ", num_clusters
-        print "starting clustering..."
+        num_clusters = int(len(ids) / 300) + 1   # 平均每个cluster中300本小说
+        print("num_clusters = ", num_clusters)
+        print("starting clustering...")
         mbk = MiniBatchKMeans(init='k-means++', n_clusters=num_clusters, batch_size=100,
                       n_init=10, max_no_improvement=10, verbose=1,
                       random_state=0)
         mbk.fit(X)
 
         # 存到数据库中
-        print "saving into database..."
+        print("saving into database...")
         for i, _id in enumerate(ids):
             cluster = int(mbk.labels_[i])
             self.__update_novel(_id, cluster)
         # 关闭数据库
         self.__close()
-        print "finished."
+        print("finished.")
 
     def __load_dataset(self, ids):
         dataset = []

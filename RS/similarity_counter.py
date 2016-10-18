@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import print_function
 import os
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
@@ -47,7 +48,7 @@ class SimilarityCounter:
                 before_exec_time = datetime.now()
                 similarities = []     # 保存所有的相似度
                 vector = self.__get_vector_by_id(nid)
-                print count, '---->', nid, "  ", n['name'], "  cluster:", cluster
+                print(count, '---->', nid, "  ", n['name'], "  cluster:", cluster)
                 for n2 in novels:
                     nid2 = str(n2['_id'])
                     if nid == nid2:
@@ -58,15 +59,15 @@ class SimilarityCounter:
                 # 对相似度进行排序，把前30个更新到数据库中
                 similarities.sort(key=operator.attrgetter("similarity"), reverse=True)
                 self.__update_novel_similarities(nid, similarities)
-                print "最相似的是:", self.__get_novel_name_by_id(similarities[0]._id), \
+                print( "最相似的是:", self.__get_novel_name_by_id(similarities[0]._id), \
                     "(", similarities[0]._id, ")", \
-                    " 相似度为：",similarities[0].similarity
+                    " 相似度为：",similarities[0].similarity )
                 after_exec_time = datetime.now()
-                print "耗时：", (after_exec_time - before_exec_time).seconds, "秒"
+                print("耗时：", (after_exec_time - before_exec_time).seconds, "秒")
                 count += 1
         # 关闭数据库
         self.__close()
-        print "similarities counting finished."
+        print("similarities counting finished.")
 
     def __get_novel_name_by_id(self, id):
         novel = self.collection.find_one({'_id': ObjectId(id)})

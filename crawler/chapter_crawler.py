@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import print_function
 from gevent import monkey; monkey.patch_all()
 import gevent
 from gevent import queue
@@ -29,22 +30,24 @@ class ChapterCrawler:
             novels.append(novel)
 
         for novel in novels:
-            print "scraping", novel['_id'], novel['name'], novel['author'], \
-                time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+            print("scraping", novel['_id'], novel['name'], novel['author'], novel['url'],
+                time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
             html = get_body(novel['url'])
-            pre_chapters = self.__parse_chapters(novel['_id'], novel['url'], html)
+            chapters = self.__parse_chapters(novel['_id'], novel['url'], html)
+
+            print("chapters num: ", len(chapters))
             # 小于300章的小说不进行统计，把novel的success设为0
-            if len(pre_chapters) <= 300:
+            if len(chapters) <= 400:
                 self.__update_failed_novel(novel)
                 continue
             # 使用协程提高效率
             tasks = []
             q = gevent.queue.Queue()
             chapter_count = 0
-            for chapter in pre_chapters:
+            for chapter in chapters:
                 tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
                 chapter_count += 1
-                if chapter_count > 100:      # 节省硬盘，每本小说只爬取前100章
+                if chapter_count > 100:      # 节省硬盘，每本小说只爬取前50章
                     break
             gevent.joinall(tasks)
             # 把小说存到文件系统里
@@ -88,7 +91,7 @@ class ChapterCrawler:
         """ 异步请求小说内容 """
         body = get_body(chapter.url)
         q.put({'chapter': chapter, 'body': body})
-        print chapter.url
+        print(chapter.url)
 
     @staticmethod
     def __parse_chapters(_id, url, html):
@@ -116,10 +119,10 @@ class ChapterCrawler:
         f = open('./corpus/' + filename, 'w')
         f.write(novel_content)
         f.close()
-        print "saving ", './corpus/' + filename
+        print("saving ", './corpus/' + filename)
 
 
 if __name__ == '__main__':
     crawler = ChapterCrawler()
     crawler.run()
-    print "chatper_crawler has been finished."
+    print("chatper_crawler has been finished.")

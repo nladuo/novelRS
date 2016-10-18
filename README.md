@@ -59,7 +59,7 @@ python RS/kmeans_cluster.py     # 聚类减小复杂度, 此步骤大概需要6-
 python RS/similarity_counter.py # 计算相似度
 ```
 
-### web服务
+### 部署web服务
 ``` shell
 cd web_demo && npm install
 npm run build               # 构建前端
@@ -68,7 +68,6 @@ python main.py              # 启动web服务器
 
 ## TODO
 - [ ] 1. 多核计算
-- [ ] 2. 使用TD-IDF向量
 
 
 ## LICENSE
