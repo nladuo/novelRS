@@ -67,7 +67,7 @@ python main.py              # 启动web服务器
 ```
 
 ## TODO
-- [ ] 1. 多核计算
+- [ ] 1. 节省内存
 
 
 ## LICENSE
