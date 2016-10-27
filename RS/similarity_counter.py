@@ -41,6 +41,9 @@ class SimilarityCounter:
 
         count = 1       # 记录计算了几个
         for cluster, novels in novel_set.items():
+            if len(novels) <= 1:       # 如果该簇只有一本小说,就不计算了.
+                continue
+            # 逐个计算
             for n in novels:
                 if n['is_compute']:    # 计算过相似度的就不再计算了
                     continue
@@ -59,8 +62,8 @@ class SimilarityCounter:
                 # 对相似度进行排序，把前30个更新到数据库中
                 similarities.sort(key=operator.attrgetter("similarity"), reverse=True)
                 self.__update_novel_similarities(nid, similarities)
-                print( "最相似的是:", self.__get_novel_name_by_id(similarities[0]._id), \
-                    "(", similarities[0]._id, ")", \
+                print( "最相似的是:", self.__get_novel_name_by_id(similarities[0]._id),
+                    "(", similarities[0]._id, ")",
                     " 相似度为：",similarities[0].similarity )
                 after_exec_time = datetime.now()
                 print("耗时：", (after_exec_time - before_exec_time).seconds, "秒")

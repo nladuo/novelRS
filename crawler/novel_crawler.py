@@ -21,7 +21,7 @@ class NovelCrawler:
         self.collection.ensure_index('url', unique=True)
 
     def run(self):
-        for i in range(1, 641):             # 爬取1-640页
+        for i in range(1, 642):             # 爬取1-641页
             print(".....................正在爬取第", i, "页.....................")
             url = "http://www.23wx.com/quanben/" + str(i)
             html = get_body(url)

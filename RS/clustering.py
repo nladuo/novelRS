@@ -1,8 +1,7 @@
 # coding=utf-8
 from __future__ import print_function
-from sklearn.cluster import MiniBatchKMeans
+from sklearn.cluster import KMeans
 import sys
-import cPickle as pickle
 import json
 import os
 from bson.objectid import ObjectId
@@ -15,8 +14,8 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-class KMeansCluster:
-    """ KMeans聚类 """
+class Clustering:
+    """ 聚类减小复杂度 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]
@@ -35,19 +34,26 @@ class KMeansCluster:
             ids.append(novel['_id'])
         print('loading dataset....')
         X = self.__load_dataset(ids)
+        print ('num_samples:', len(X))
+        print ('num_features:', len(X[0]))
         num_clusters = int(len(ids) / 300) + 1   # 平均每个cluster中300本小说
         print("num_clusters = ", num_clusters)
         print("starting clustering...")
-        mbk = MiniBatchKMeans(init='k-means++', n_clusters=num_clusters, batch_size=100,
-                      n_init=10, max_no_improvement=10, verbose=1,
-                      random_state=0)
-        mbk.fit(X)
+        km = KMeans(init='k-means++', n_clusters=num_clusters, verbose=1, n_jobs=config['cpu_num'])
+        km.fit(X)
 
         # 存到数据库中
         print("saving into database...")
+        cluster_nums = {}   # 保存每个cluster中的数量
         for i, _id in enumerate(ids):
-            cluster = int(mbk.labels_[i])
+            if not km.labels_[i] in cluster_nums:
+                cluster_nums[km.labels_[i]] = 0
+            cluster_nums[km.labels_[i]] += 1
+            cluster = int(km.labels_[i])
             self.__update_novel(_id, cluster)
+        # 每个簇中元素的个数
+        for k, v in cluster_nums.items():
+            print(k, ":", v)
         # 关闭数据库
         self.__close()
         print("finished.")
@@ -85,5 +91,5 @@ class KMeansCluster:
 
 
 if __name__ == '__main__':
-    cluster = KMeansCluster()
-    cluster.run()
+    clustering = Clustering()
+    clustering.run()

@@ -36,7 +36,7 @@ config = {
     'db_host': 'localhost',
     'db_port': 27017,
     'db_name': 'novelRS',
-    'cpu_num': 4            # 并行分词的CPU数目
+    'cpu_num': 4            # 开几个进程
 }
 ```
 

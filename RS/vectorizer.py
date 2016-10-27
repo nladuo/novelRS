@@ -35,11 +35,12 @@ class Vectorizer:
         for novel in self.novels:
             novels.append(novel)
 
-        files = [open('./seg_corpus/' + str(novel['_id']) + '.txt')
+        contents = [self.__read_file(novel['_id'])
                         for novel in novels]
-        vectorizer = TfidfVectorizer(stop_words=stop_words, min_df=10, max_df=500, input='file')
+        vectorizer = TfidfVectorizer(stop_words=stop_words, min_df=10, max_df=1000)
         print("start vectorizing...")
-        X = vectorizer.fit_transform(files).toarray()
+        X = vectorizer.fit_transform(contents).toarray()
+        print('vocabulary num:', len(vectorizer.vocabulary_))
         # 开始保存
         for (i, novel) in enumerate(novels):
             print("saving", novel['name'])
@@ -65,7 +66,7 @@ class Vectorizer:
     @staticmethod
     def __read_file(_id):
         """ 读取corpus """
-        filename = './seg_corpus/' + _id + '.txt'
+        filename = './seg_corpus/' + str(_id) + '.txt'
         if os.path.exists(filename):
             f = open(filename, "rb")
             text = f.read()
@@ -81,30 +82,6 @@ class Vectorizer:
         f = open(filename, "wb")
         f.write(text)
         f.close()
-
-    @staticmethod
-    def __get_vectorizer():
-        if os.path.exists('vectorizer.dat'):
-            f = open('vectorizer.dat', 'r')
-            vectorizer = pickle.load(f)
-            f.close()
-        else:
-            # 对其中的500本小说进行向量化，提取feature_names
-            MAX_FILES_NUM = 500
-            filenames = os.listdir('./seg_corpus')
-            random.shuffle(filenames)
-            print("loading dataset....")
-            contents = [open('./seg_corpus/' + filename).read()
-                        for i, filename in enumerate(filenames) if i < MAX_FILES_NUM]
-            vectorizer = TfidfVectorizer(stop_words=stop_words, min_df=20, max_df=300)
-            vectorizer.fit(contents)
-            # 保存vectorizer
-            f = open('vectorizer.dat', 'w')
-            pickle.dump(vectorizer, f)
-            f.close()
-
-        print('vocabulary num:', len(vectorizer.vocabulary_) )
-        return vectorizer
 
 
 if __name__ == '__main__':

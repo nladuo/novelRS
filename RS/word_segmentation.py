@@ -80,6 +80,5 @@ class WordSegmentation:
 
 
 if __name__ == '__main__':
-    jieba.enable_parallel(config['cpu_num'] - 1)  # 并发分词
     segmenter = WordSegmentation()
     segmenter.run()
