@@ -39,7 +39,7 @@ class Clustering:
         num_clusters = int(len(ids) / 300) + 1   # 平均每个cluster中300本小说
         print("num_clusters = ", num_clusters)
         print("starting clustering...")
-        km = KMeans(init='k-means++', n_clusters=num_clusters, verbose=1, n_jobs=config['cpu_num'])
+        km = KMeans(init='k-means++', n_clusters=num_clusters, verbose=1, n_jobs=-1)
         km.fit(X)
 
         # 存到数据库中
