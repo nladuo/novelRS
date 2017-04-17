@@ -1,6 +1,5 @@
 # novelRS
-一个简单的网络小说推荐系统，写着玩儿。  
-想法来源于: [一个简单的网文推荐系统，解决书荒](https://www.v2ex.com/t/308827)
+一个简单的网络小说推荐系统，写着玩儿。想法来源于: [一个简单的网文推荐系统，解决书荒](https://www.v2ex.com/t/308827)
 ## 状态
 正在构建中.....
 
@@ -21,7 +20,7 @@ mongoimport -d novelRS -c novels  --file ./novels.dat
 ## 算法步骤
 1、爬取数据<br>
 2、使用jieba分词<br>
-3、小说内容向量化<br>
+3、小说内容TF-IDF向量化<br>
 4、k-means聚类减小复杂度<br>
 5、计算相似度<br>
 

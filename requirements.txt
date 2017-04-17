@@ -1,5 +1,6 @@
 pymongo
 requests
+lxml
 jieba
 bs4
 gevent
