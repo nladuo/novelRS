@@ -1,6 +1,6 @@
 # novelRS
-一个简单的网络小说推荐系统，写着玩儿。
-
+一个简单的网络小说推荐系统，写着玩儿。  
+想法来源于: [一个简单的网文推荐系统，解决书荒](https://www.v2ex.com/t/308827)
 ## 状态
 正在构建中.....
 
@@ -65,9 +65,6 @@ cd web_demo && npm install
 npm run build               # 构建前端
 python main.py              # 启动web服务器
 ```
-
-## TODO
-- [ ] 1. 节省内存
 
 
 ## LICENSE
