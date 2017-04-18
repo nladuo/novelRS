@@ -4,3 +4,4 @@
 *.dat
 test*
 get_count.sh
+*.pickle

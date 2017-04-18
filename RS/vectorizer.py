@@ -1,12 +1,10 @@
 # coding=utf-8
 from __future__ import print_function
-from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
 import cPickle as pickle
-import random
-import json
 import os
-from bson.objectid import ObjectId
+from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
+from sklearn.pipeline import make_pipeline
 sys.path.append("../")
 from lib.model import *
 from lib.utils import *
@@ -37,27 +35,29 @@ class Vectorizer:
 
         contents = [self.__read_file(novel['_id'])
                         for novel in novels]
-        vectorizer = TfidfVectorizer(stop_words=stop_words, min_df=10, max_df=1000)
+        # Perform an IDF normalization on the output of HashingVectorizer
+        hasher = HashingVectorizer(n_features=1000000,
+                                   stop_words=stop_words, non_negative=True,
+                                   norm=None, binary=False)
+        vectorizer = make_pipeline(hasher, TfidfTransformer())
+
         print("start vectorizing...")
-        X = vectorizer.fit_transform(contents).toarray()
-        print('vocabulary num:', len(vectorizer.vocabulary_))
-        # 开始保存
-        for (i, novel) in enumerate(novels):
-            print("saving", novel['name'])
-            vector = json.dumps(X[i].tolist())
-            self.__save_file(novel['_id'], vector)
-            self.__update_novel(novel['_id'])
+        # 转化向量
+        X = vectorizer.fit_transform(contents)
+        with open("dataset.pickle", "w") as f:
+            print("saving dataset.....")
+            pickle.dump(X, f, pickle.HIGHEST_PROTOCOL)
+
+
+        # 保存模型
+        with open("vectorizer.pickle", "w") as f:
+            print("saving vectorizer model.....")
+            pickle.dump(vectorizer, f)
+
         # 关闭数据库
         self.__close()
         print("finished. all documents has been vectorized.")
 
-    def __update_novel(self, novel_id):
-        """ 更新novel的is_vectorize """
-        self.collection.update({'_id': ObjectId(novel_id)}, {
-            '$set': {
-                'is_vectorize': True
-            },
-        })
 
     def __close(self):
         """ 关闭数据库 """
@@ -68,20 +68,11 @@ class Vectorizer:
         """ 读取corpus """
         filename = './seg_corpus/' + str(_id) + '.txt'
         if os.path.exists(filename):
-            f = open(filename, "rb")
-            text = f.read()
-            f.close()
+            with open(filename, "rb") as f:
+                text = f.read()
             return text
         else:
             raise Exception('文件：' + filename + " 不存在")
-
-    @staticmethod
-    def __save_file(_id, text):
-        """ 保存到vectors """
-        filename = 'vectors/' + str(_id) + '.dat'
-        f = open(filename, "wb")
-        f.write(text)
-        f.close()
 
 
 if __name__ == '__main__':

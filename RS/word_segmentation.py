@@ -22,7 +22,7 @@ class WordSegmentation:
         self.collection.ensure_index('url', unique=True)
         self.novels = self.collection.find({
             'success': True,
-            # 'is_segment': False
+            'is_segment': False
         })
 
     def run(self):
@@ -63,9 +63,8 @@ class WordSegmentation:
         """ 读取corpus """
         filename = '../crawler/corpus/' + _id + '.txt'
         if os.path.exists(filename):
-            f = open(filename, "rb")
-            text = f.read()
-            f.close()
+            with open(filename, "rb") as f:
+                text = f.read()
             return text
         else:
             raise Exception('文件：' + filename + " 不存在")
@@ -74,9 +73,8 @@ class WordSegmentation:
     def __save_file(_id, text):
         """ 保存到seg_corpus """
         filename = 'seg_corpus/' + _id + '.txt'
-        f = open(filename, "wb")
-        f.write(text)
-        f.close()
+        with open(filename, "wb") as f:
+            f.write(text)
 
 
 if __name__ == '__main__':

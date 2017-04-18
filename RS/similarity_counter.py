@@ -100,9 +100,8 @@ class SimilarityCounter:
         """ 读取corpus """
         filename = './vectors/' + str(_id) + '.dat'
         if os.path.exists(filename):
-            f = open(filename, "rb")
-            text = f.read()
-            f.close()
+            with open(filename, "rb") as f:
+                text = f.read()
             return text
         else:
             raise Exception('文件：' + filename + " 不存在")

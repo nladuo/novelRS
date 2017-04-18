@@ -116,9 +116,8 @@ class ChapterCrawler:
     def __save_novel(novel, novel_content):
         """ 保存在文件系统 """
         filename = str(novel['_id']) + ".txt"
-        f = open('./corpus/' + filename, 'w')
-        f.write(novel_content)
-        f.close()
+        with open('./corpus/' + filename, 'w') as f:
+            f.write(novel_content)
         print("saving ", './corpus/' + filename)
 
 
