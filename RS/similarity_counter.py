@@ -98,11 +98,9 @@ class SimilarityCounter:
     @staticmethod
     def __read_file(_id):
         """ 读取corpus """
-        filename = './vectors/' + str(_id) + '.dat'
+        filename = './seg_corpus/' + str(_id) + '.dat'
         if os.path.exists(filename):
-            with open(filename, "rb") as f:
-                text = f.read()
-            return text
+            return open(filename, "rb")
         else:
             raise Exception('文件：' + filename + " 不存在")
 
@@ -116,5 +114,9 @@ class SimilarityCounter:
 
 
 if __name__ == '__main__':
-    counter = SimilarityCounter()
-    counter.run()
+    # counter = SimilarityCounter()
+    # counter.run()
+    with open("vectorizer.pickle", "r") as f:
+        vectorizer = pickle.load(f)
+        vec = vectorizer.transform([open("./seg_corpus/58f57a8e73779c5b37563c8a.txt", "rb")])
+        print(vec.shape)

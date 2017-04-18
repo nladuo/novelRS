@@ -5,6 +5,7 @@ import cPickle as pickle
 import os
 from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
 from sklearn.pipeline import make_pipeline
+from time import time
 sys.path.append("../")
 from lib.model import *
 from lib.utils import *
@@ -37,14 +38,17 @@ class Vectorizer:
         contents = [self.__read_file(novel['_id'])
                         for novel in novels]
         # Perform an IDF normalization on the output of HashingVectorizer
-        hasher = HashingVectorizer(n_features=1000000,
+        hasher = HashingVectorizer(n_features=1000000, input="file",
                                    stop_words=stop_words, non_negative=True,
                                    norm=None, binary=False)
         vectorizer = make_pipeline(hasher, TfidfTransformer())
 
+
         print("start vectorizing...")
+        t0 = time()
         # 转化向量
         X = vectorizer.fit_transform(contents)
+        print("done in %0.3fs" % (time() - t0))
         with open("dataset.pickle", "w") as f:
             print("saving dataset.....")
             pickle.dump(X, f, pickle.HIGHEST_PROTOCOL)
@@ -69,9 +73,7 @@ class Vectorizer:
         """ 读取corpus """
         filename = './seg_corpus/' + str(_id) + '.txt'
         if os.path.exists(filename):
-            with open(filename, "rb") as f:
-                text = f.read()
-            return text
+            return open(filename, "rb")
         else:
             raise Exception('文件：' + filename + " 不存在")
 
