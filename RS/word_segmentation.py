@@ -22,6 +22,7 @@ class WordSegmentation:
         self.collection.ensure_index('url', unique=True)
         self.novels = self.collection.find({
             'success': True,
+            'is_crawled': True,
             'is_segment': False
         })
 

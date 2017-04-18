@@ -27,8 +27,8 @@ class SimilarityCounter:
         self.collection.ensure_index('url', unique=True)
         self.novels = self.collection.find({
             'success': True,
-            'is_segment': True,
-            'is_vectorize': True
+            'is_crawled': True,
+            'is_segment': True
         })
 
     def run(self):
