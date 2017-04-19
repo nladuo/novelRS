@@ -18,11 +18,11 @@ mongoimport -d novelRS -c novels  --file ./novels.dat
 ```
 
 ## 运作流程
-1、爬取数据<br>
-2、对小说分词<br>
-3、对小说进行TF-IDF向量化<br>
-4、使用k-means聚类把小说分为多个簇<br>
-5、对同一簇(或最近邻簇)的小说计算余弦相似度<br>
+- 1、爬取数据<br>
+- 2、对小说分词<br>
+- 3、对小说进行TF-IDF向量化<br>
+- 4、使用k-means聚类把小说分为多个簇<br>
+- 5、对同一簇(或最近邻簇)的小说计算余弦相似度<br>
 
 ## 安装
 ### 配置
@@ -66,7 +66,7 @@ python main.py              # 启动web服务器
 ```
 
 ### TODO
--[ ] 支持并行分词
+- [ ] 支持并行分词
 
 ## LICENSE
 MIT
