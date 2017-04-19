@@ -3,8 +3,8 @@ from __future__ import print_function
 import sys
 import cPickle as pickle
 import os
-from sklearn.feature_extraction.text import HashingVectorizer, TfidfTransformer
-from sklearn.pipeline import make_pipeline
+from sklearn.feature_extraction.text import CountVectorizer
+# from sklearn.pipeline import make_pipeline
 from time import time
 sys.path.append("../")
 from lib.model import *
@@ -37,12 +37,8 @@ class Vectorizer:
 
         contents = [self.__read_file(novel['_id'])
                         for novel in novels]
-        # Perform an IDF normalization on the output of HashingVectorizer
-        hasher = HashingVectorizer(n_features=1000000, input="file",
-                                   stop_words=stop_words, non_negative=True,
-                                   norm=None, binary=False)
-        vectorizer = make_pipeline(hasher, TfidfTransformer())
-
+        vectorizer = CountVectorizer(input="file",min_df=10, max_df=1000,
+                                   stop_words=stop_words)
 
         print("start vectorizing...")
         t0 = time()

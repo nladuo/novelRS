@@ -47,14 +47,14 @@ pip install -r requirements.txt
 ### 爬虫
 ``` shell
 python crawler/novel_crawler.py     # 爬取小说
-python crawler/chapter_crawler.py   # 爬去小说章节
+python crawler/chapter_crawler.py   # 爬去小说章节(1M带宽的服务器差不多得爬个半天)
 ```
 
 ### 推荐系统
 ``` shell
-python RS/word_segmentation.py      # 分词
-python RS/vectorizer.py              # 向量化
-python RS/kmeans_clustering.py      # 聚类减小复杂度, 此步骤大概需要6-7G内存
+python RS/word_segmentation.py      # 分词, 跑了13个多小时
+python RS/vectorizer.py             # 向量化
+python RS/kmeans_clustering.py      # 聚类减小复杂度
 python RS/similarity_computation.py # 计算相似度
 ```
 
@@ -65,8 +65,8 @@ npm run build               # 构建前端
 python main.py              # 启动web服务器
 ```
 
-### TODO
+## TODO
 - [ ] 支持并行分词
-
+- [ ] 使用TF-IDF向量化
 ## LICENSE
 MIT
