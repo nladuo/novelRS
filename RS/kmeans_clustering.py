@@ -15,7 +15,7 @@ if __name__ == "__main__":
     with open("./dataset.pickle", "rb") as f:
         X = np.load(f)
         print("shape of dataset:", X.shape)
-    n_clusters = X.shape[0] / 50
+    n_clusters = X.shape[0] / 20
     print("n_clusters is: %d" % n_clusters)
     km = KMeans(init='k-means++', n_clusters=n_clusters, verbose=1)
     t0 = time()
