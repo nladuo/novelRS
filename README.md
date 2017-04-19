@@ -1,5 +1,5 @@
 # novelRS
-一个简单的网络小说推荐系统，写着玩儿。想法来源于: [一个简单的网文推荐系统，解决书荒](https://www.v2ex.com/t/308827)
+一个简单的网络小说推荐系统，写着玩儿。想法来源于: [v2ex](https://www.v2ex.com/t/308827)
 ## 状态
 正在构建中.....
 
@@ -17,12 +17,12 @@
 mongoimport -d novelRS -c novels  --file ./novels.dat
 ```
 
-## 算法步骤
+## 运作流程
 1、爬取数据<br>
-2、使用jieba分词<br>
-3、小说内容TF-IDF向量化<br>
-4、k-means聚类减小复杂度<br>
-5、计算相似度<br>
+2、对小说分词<br>
+3、对小说进行TF-IDF向量化<br>
+4、使用k-means聚类把小说分为多个簇<br>
+5、对同一簇(或最近邻簇)的小说计算余弦相似度<br>
 
 ## 安装
 ### 配置
@@ -52,10 +52,10 @@ python crawler/chapter_crawler.py   # 爬去小说章节
 
 ### 推荐系统
 ``` shell
-python RS/word_segmentation.py  # 分词
-python RS/vectorizer.py         # 向量化
-python RS/kmeans_cluster.py     # 聚类减小复杂度, 此步骤大概需要6-7G内存
-python RS/similarity_counter.py # 计算相似度
+python RS/word_segmentation.py      # 分词
+python RS/vectorizer.py              # 向量化
+python RS/kmeans_clustering.py      # 聚类减小复杂度, 此步骤大概需要6-7G内存
+python RS/similarity_computation.py # 计算相似度
 ```
 
 ### 部署web服务
@@ -65,6 +65,8 @@ npm run build               # 构建前端
 python main.py              # 启动web服务器
 ```
 
+### TODO
+-[ ] 支持并行分词
 
 ## LICENSE
 MIT

@@ -18,7 +18,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-class SimilarityCounter:
+class SimilarityComputation:
     """ 在cluster内计算相似度 """
     def __init__(self):
         self.client = init_client()
@@ -92,7 +92,7 @@ class SimilarityCounter:
 
     @staticmethod
     def __get_vector_by_id(_id):
-        text = SimilarityCounter.__read_file(_id)
+        text = SimilarityComputation.__read_file(_id)
         return json.loads(text)
 
     @staticmethod
@@ -114,7 +114,7 @@ class SimilarityCounter:
 
 
 if __name__ == '__main__':
-    # counter = SimilarityCounter()
+    # counter = SimilarityComputation()
     # counter.run()
     with open("vectorizer.pickle", "r") as f:
         vectorizer = pickle.load(f)
