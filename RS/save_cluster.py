@@ -14,17 +14,17 @@ sys.setdefaultencoding('utf8')
 def init_collection():
     client = init_client()
     db = client[config['db_name']]
-    collection = db.novels
-    collection.ensure_index('url', unique=True)
-    return collection.find({
+    coll = db.novels
+    coll.ensure_index('url', unique=True)
+    return coll
+
+if __name__ == "__main__":
+    collection = init_collection()
+    novels = collection.find({
         'success': True,
         'is_crawled': True,
         'is_segment': True
     })
-
-
-if __name__ == "__main__":
-    novels = init_collection()
 
     with open("km.pickle", "r") as f:
         print("loading km.pickle ...")
@@ -39,9 +39,10 @@ if __name__ == "__main__":
         f = open('seg_corpus/' + str(novel['_id']) + '.txt')
         vec = vectorizer.transform([f])
         which_cluster = int(km.predict(vec[0])[0])
-        novels.update({'_id': novel['_id']}, {
+        collection.update({'_id': novel['_id']}, {
             '$set': {
                 'cluster': which_cluster
             }
         })
         print(novel['name'], which_cluster)
+
