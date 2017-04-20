@@ -32,42 +32,44 @@ class SimilarityComputation:
         })
 
     def run(self):
-        novel_set = {}
-        # 先把数据都读到内存里
-        for novel in self.novels:
-            if not novel['cluster'] in novel_set:   # 根据cluster来计算相似度
-                novel_set[novel['cluster']] = []
-            novel_set[novel['cluster']].append(novel)
-
-        count = 1       # 记录计算了几个
-        for cluster, novels in novel_set.items():
-            if len(novels) <= 1:       # 如果该簇只有一本小说,就不计算了.
-                continue
-            # 逐个计算
-            for n in novels:
-                if n['is_compute']:    # 计算过相似度的就不再计算了
-                    continue
-                nid = str(n['_id'])
-                before_exec_time = datetime.now()
-                similarities = []     # 保存所有的相似度
-                vector = self.__get_vector_by_id(nid)
-                print(count, '---->', nid, "  ", n['name'], "  cluster:", cluster)
-                for n2 in novels:
-                    nid2 = str(n2['_id'])
-                    if nid == nid2:
-                        continue
-                    vector2 = self.__get_vector_by_id(nid2)
-                    similarity = self.__get_cosine_similarity(vector, vector2)
-                    similarities.append(Similarity(nid2, similarity))
-                # 对相似度进行排序，把前30个更新到数据库中
-                similarities.sort(key=operator.attrgetter("similarity"), reverse=True)
-                self.__update_novel_similarities(nid, similarities)
-                print( "最相似的是:", self.__get_novel_name_by_id(similarities[0]._id),
-                    "(", similarities[0]._id, ")",
-                    " 相似度为：",similarities[0].similarity )
-                after_exec_time = datetime.now()
-                print("耗时：", (after_exec_time - before_exec_time).seconds, "秒")
-                count += 1
+        for i in range(150):
+            print(i, self.novels.find({"cluster": i}).count())
+        # novel_set = {}
+        # # 先把数据都读到内存里
+        # for novel in self.novels:
+        #     if not novel['cluster'] in novel_set:   # 根据cluster来计算相似度
+        #         novel_set[novel['cluster']] = []
+        #     novel_set[novel['cluster']].append(novel)
+        #
+        # count = 1       # 记录计算了几个
+        # for cluster, novels in novel_set.items():
+        #     if len(novels) <= 1:       # 如果该簇只有一本小说,就不计算了.
+        #         continue
+        #     # 逐个计算
+        #     for n in novels:
+        #         if n['is_compute']:    # 计算过相似度的就不再计算了
+        #             continue
+        #         nid = str(n['_id'])
+        #         before_exec_time = datetime.now()
+        #         similarities = []     # 保存所有的相似度
+        #         vector = self.__get_vector_by_id(nid)
+        #         print(count, '---->', nid, "  ", n['name'], "  cluster:", cluster)
+        #         for n2 in novels:
+        #             nid2 = str(n2['_id'])
+        #             if nid == nid2:
+        #                 continue
+        #             vector2 = self.__get_vector_by_id(nid2)
+        #             similarity = self.__get_cosine_similarity(vector, vector2)
+        #             similarities.append(Similarity(nid2, similarity))
+        #         # 对相似度进行排序，把前30个更新到数据库中
+        #         similarities.sort(key=operator.attrgetter("similarity"), reverse=True)
+        #         self.__update_novel_similarities(nid, similarities)
+        #         print( "最相似的是:", self.__get_novel_name_by_id(similarities[0]._id),
+        #             "(", similarities[0]._id, ")",
+        #             " 相似度为：",similarities[0].similarity )
+        #         after_exec_time = datetime.now()
+        #         print("耗时：", (after_exec_time - before_exec_time).seconds, "秒")
+        #         count += 1
         # 关闭数据库
         self.__close()
         print("similarities counting finished.")
@@ -114,9 +116,5 @@ class SimilarityComputation:
 
 
 if __name__ == '__main__':
-    # counter = SimilarityComputation()
-    # counter.run()
-    with open("vectorizer.pickle", "r") as f:
-        vectorizer = pickle.load(f)
-        vec = vectorizer.transform([open("./seg_corpus/58f57a8e73779c5b37563c8a.txt", "rb")])
-        print(vec.shape)
+    computer = SimilarityComputation()
+    computer.run()
