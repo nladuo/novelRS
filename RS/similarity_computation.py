@@ -13,6 +13,7 @@ sys.path.append("../")
 from lib.model import *
 from lib.utils import *
 from lib.config import *
+from time import time
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -32,8 +33,8 @@ class SimilarityComputation:
         })
 
     def run(self):
-        for i in range(150):
-            print(i, self.novels.find({"cluster": i}).count())
+        # for i in range(150):
+            # print(i, self.collection.find({"cluster": i}).count())
         # novel_set = {}
         # # 先把数据都读到内存里
         # for novel in self.novels:
@@ -116,5 +117,15 @@ class SimilarityComputation:
 
 
 if __name__ == '__main__':
-    computer = SimilarityComputation()
-    computer.run()
+    # computer = SimilarityComputation()
+    # computer.run()
+
+    with open("./dataset.pickle", "rb") as f:
+        X = np.load(f)
+        print("shape of dataset:", X.shape)
+
+    t0 = time()
+    # 转化向量
+    print(cosine_similarity(X[0], X[1])[0][0])
+    print("done in %0.3fs" % (time() - t0))
+

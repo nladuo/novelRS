@@ -3,8 +3,7 @@ from __future__ import print_function
 import sys
 import cPickle as pickle
 import os
-from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.pipeline import make_pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
 from time import time
 sys.path.append("../")
 from lib.model import *
@@ -30,15 +29,9 @@ class Vectorizer:
         })
 
     def run(self):
-        novels = []
-        # 先把数据都读到内存里
-        for novel in self.novels:
-            novels.append(novel)
-
         contents = [self.__read_file(novel['_id'])
-                        for novel in novels]
-        vectorizer = CountVectorizer(input="file",min_df=10, max_df=1000,
-                                   stop_words=stop_words)
+                        for novel in self.novels]
+        vectorizer = TfidfVectorizer(input="file", stop_words=stop_words, max_features=50000)
 
         print("start vectorizing...")
         t0 = time()

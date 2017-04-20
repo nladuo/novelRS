@@ -55,7 +55,7 @@ python crawler/chapter_crawler.py   # 爬去小说章节(1M带宽的服务器差
 ``` shell
 python RS/word_segmentation.py      # 分词, 跑了13多个小时
 python RS/vectorizer.py             # 向量化, 大概半个小时
-python RS/kmeans_clustering.py      # 聚类减小复杂度, 大概5个小时
+python RS/clustering.py             # 聚类减小复杂度
 python RS/save_cluster.py           # 保存簇编号
 python RS/similarity_computation.py # 计算相似度
 ```
@@ -69,6 +69,6 @@ python main.py              # 启动web服务器
 
 ## TODO
 - [ ] 支持并行分词
-- [ ] 使用TF-IDF向量化
+- [ ] 支持在线学习
 ## LICENSE
 MIT
