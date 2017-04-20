@@ -1,3 +1,5 @@
+# coding=utf-8
+from __future__ import print_function
 import cPickle as pickle
 import sys
 sys.path.append("../")
@@ -17,7 +19,7 @@ def init_collection():
     return collection.find({
         'success': True,
         'is_crawled': True,
-        'is_segment': False
+        'is_segment': True
     })
 
 
@@ -25,13 +27,14 @@ if __name__ == "__main__":
     novels = init_collection()
 
     with open("km.pickle", "r") as f:
-        print "loading km.pickle ..."
+        print("loading km.pickle ...")
         km = pickle.load(f)
 
     with open("./vectorizer.pickle", "r") as f:
-        print "loading vectorizer.pickle ..."
+        print("loading vectorizer.pickle ...")
         vectorizer = pickle.load(f)
 
+    print("start computation.")
     for novel in novels:
         f = open('seg_corpus/' + str(novel['_id']) + '.txt')
         vec = vectorizer.transform([f])
@@ -41,4 +44,4 @@ if __name__ == "__main__":
                 'cluster': which_cluster
             }
         })
-        print novel['name'], which_cluster
+        print(novel['name'], which_cluster)
