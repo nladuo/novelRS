@@ -21,8 +21,9 @@ mongoimport -d novelRS -c novels  --file ./novels.dat
 - 1、爬取数据<br>
 - 2、对小说分词<br>
 - 3、对分词后的小说进行向量化<br>
-- 4、使用k-means聚类把小说分为多个簇<br>
-- 5、对同一簇(或最近邻簇)的小说计算余弦相似度<br>
+- 4、对向量进行降维<br>
+- 5、使用k-means聚类把小说分为多个簇<br>
+- 6、对同一簇(或最近邻簇)的小说计算余弦相似度<br>
 
 ## 安装
 ### 配置
@@ -46,18 +47,21 @@ pip install -r requirements.txt
 
 ### 爬虫
 ``` shell
-python crawler/novel_crawler.py     # 爬取小说
-python crawler/chapter_crawler.py   # 爬去小说章节(1M带宽的服务器差不多得爬个半天)
+cd crawler
+python novel_crawler.py     # 爬取小说
+python chapter_crawler.py   # 爬去小说章节(1M带宽的服务器差不多得爬个半天)
 ```
 
 ### 推荐系统
 测试服务器配置:阿里云8G内存
 ``` shell
-python RS/word_segmentation.py      # 分词, 跑了13多个小时
-python RS/vectorizer.py             # 向量化, 大概半个小时
-python RS/clustering.py             # 聚类减小复杂度
-python RS/save_cluster.py           # 保存簇编号
-python RS/similarity_computation.py # 计算相似度
+cd RS
+python word_segmentation.py         # 分词, 跑了13多个小时
+python vectorizer.py                # TF-IDF向量化, 大概半个小时
+python decomposition.py             # 降维
+python kmeans_clustering.py         # 聚类
+python save_cluster.py              # 保存簇编号
+python similarity_computation.py    # 计算相似度
 ```
 
 ### 部署web服务
