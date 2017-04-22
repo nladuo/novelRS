@@ -54,12 +54,12 @@ class FailedUrl:
 
 class Similarity:
     """ 保存两个小说之间相似度 """
-    def __init__(self, _id, similarity):
-        self._id = _id
+    def __init__(self, novel_id, similarity):
+        self.novel_id = novel_id
         self.similarity = similarity
 
     def dict(self):
         return {
-            '_id': self._id,
+            'novel_id': self.novel_id,
             'similarity': self.similarity,
         }

@@ -31,7 +31,7 @@ def get_novels(name):
     print similarities
     for similarity in similarities:
         novel = collection.find_one({
-            '_id': ObjectId(similarity._id),
+            'novel_id': ObjectId(similarity.novel_id),
             'success': True,
             'is_compute': True
         })

@@ -8,6 +8,7 @@ import sys
 from time import time
 import cPickle as pickle
 
+
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -18,9 +19,10 @@ if __name__ == "__main__":
         X = np.load(f)
         print("shape of dataset:", X.shape)
 
+    # 降维并归一化
     t0 = time()
     print("starting decomposition....")
-    svd = TruncatedSVD(1000)
+    svd = TruncatedSVD(100)
     normalizer = Normalizer(copy=False)
     lsa = make_pipeline(svd, normalizer)
 
@@ -28,13 +30,16 @@ if __name__ == "__main__":
 
     print("done in %fs" % (time() - t0))
 
+    # 保存模型, 用于Kmeans聚类
     print("saving decomposed_dataset.....")
     with open("decomposed_dataset.pickle", "wb") as f:
         pickle.dump(X, f, pickle.HIGHEST_PROTOCOL)
 
+    # 保存模型, 用于以后的在线学习
     print("saving lsa.pickle.....")
     with open("lsa.pickle", "wb") as f:
         pickle.dump(X, f, pickle.HIGHEST_PROTOCOL)
+
 
     print("decomposition has been finished")
 
