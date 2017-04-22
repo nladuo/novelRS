@@ -6,7 +6,6 @@ import json
 import sys
 sys.path.append("../")
 from lib.utils import *
-from lib.model import *
 from lib.config import *
 
 reload(sys)
@@ -28,7 +27,6 @@ def get_novels(name):
         return []
     result = []
     similarities = pickle.loads(str(novel['similarities']))
-    print similarities
     for similarity in similarities:
         novel = collection.find_one({
             '_id': ObjectId(similarity.novel_id),
@@ -61,7 +59,7 @@ def serve_static(path):
 
 
 @app.route('/api/search/<name>')
-def search(name):
+def search(name=""):
     return json.dumps(get_novels(name))
 
 if __name__ == '__main__':
