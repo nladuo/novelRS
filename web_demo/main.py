@@ -31,10 +31,11 @@ def get_novels(name):
     print similarities
     for similarity in similarities:
         novel = collection.find_one({
-            'novel_id': ObjectId(similarity.novel_id),
+            '_id': ObjectId(similarity.novel_id),
             'success': True,
             'is_compute': True
         })
+
         if novel is None:
             continue
         n = {
@@ -64,4 +65,4 @@ def search(name):
     return json.dumps(get_novels(name))
 
 if __name__ == '__main__':
-    app.run(port=38438, debug=True)
+    app.run(host="0.0.0.0", port=38438, debug=True)
