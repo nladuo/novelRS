@@ -3,7 +3,7 @@ from __future__ import print_function
 from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import Normalizer
-import numpy as np
+# import numpy as np
 import sys
 from time import time
 import cPickle as pickle
@@ -16,13 +16,13 @@ sys.setdefaultencoding('utf8')
 if __name__ == "__main__":
     print("loading ./dataset.pickle...")
     with open("./dataset.pickle", "rb") as f:
-        X = np.load(f)
+        X = pickle.load(f)
         print("shape of dataset:", X.shape)
 
     # 降维并归一化
     t0 = time()
     print("starting decomposition....")
-    svd = TruncatedSVD(100)
+    svd = TruncatedSVD(2000)
     normalizer = Normalizer(copy=False)
     lsa = make_pipeline(svd, normalizer)
 
