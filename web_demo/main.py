@@ -27,11 +27,11 @@ def get_novels(name):
         return []
     result = []
     similarities = pickle.loads(str(novel['similarities']))
-    for similarity in similarities:
+    for similarity in similarities[1:]:
         novel = collection.find_one({
             '_id': ObjectId(similarity.novel_id),
             'success': True,
-            'is_compute': True
+            # 'is_compute': True
         })
 
         if novel is None:

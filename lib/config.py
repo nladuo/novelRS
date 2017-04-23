@@ -2,8 +2,8 @@
 
 config = {
     'timeout': 3,
-    'db_user': '',          # mongo的用户名
-    'db_pass': '',          # mongo的密码
+    'db_user': '',          # mongodb的用户名
+    'db_pass': '',          # mongodb的密码
     'db_host': 'localhost',
     'db_port': 27017,
     'db_name': 'novelRS',

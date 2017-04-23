@@ -21,7 +21,6 @@ class Novel:
             'success': True,                    # 爬取章节是否成功
             'is_segment': False,                # 有没有分割过
             'is_compute': False,                # 有没有计算过相似度
-            'cluster': -1,                      # 聚类的类别
             'similarities': ""                  # 记录相似的小说
         }
 

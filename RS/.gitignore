@@ -2,6 +2,5 @@
 *.log
 1.txt
 *.dat
-test*
 get_count.sh
 *.pickle

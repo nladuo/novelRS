@@ -6,7 +6,7 @@
         <td>作者</td>
         <td>分类</td>
         <td>字数</td>
-        <td>主题相似度</td>
+        <td>相似度</td>
       </tr>
     </thead>
     <tbody>

@@ -6,7 +6,6 @@ import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from time import time
 sys.path.append("../")
-from lib.model import *
 from lib.utils import *
 from lib.config import *
 from lib.stop_words import *
@@ -50,7 +49,7 @@ class Vectorizer:
 
         # 关闭数据库
         self.__close()
-        print("finished. all documents has been vectorized.")
+        print("Finished!! All documents has been vectorized.")
 
 
     def __close(self):
