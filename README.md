@@ -1,5 +1,5 @@
 # novelRS
-一个简单的网络小说推荐系统，写着玩儿。想法来源于: [v2ex](https://www.v2ex.com/t/308827)
+一个简单的网络小说推荐系统，基于余弦相似度，写着玩儿。想法来源于: [v2ex](https://www.v2ex.com/t/308827)
 ## 效果图
 ![screenshot](./screenshot.png)
 
@@ -13,7 +13,7 @@ python2.7
 
 ## 小说数据
 ### 下载地址
-链接: 待上传。。。。。
+链接: https://pan.baidu.com/s/1slTSiQT 密码: 2n3y
 
 ### 导入数据
 导入数据后，即可在本地正常显示web_demo。
