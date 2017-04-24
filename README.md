@@ -3,8 +3,11 @@
 ## 效果图
 ![screenshot](./screenshot.png)
 
+## 开发语言
+python2.7
+
 ## 网站Demo
-前端：vue+vuex <br>
+前端：vue <br>
 后端：flask <br>
 数据库：mongodb
 
@@ -13,6 +16,7 @@
 链接: 待上传。。。。。
 
 ### 导入数据
+导入数据后，即可在本地正常显示web_demo。
 ``` shell
 mongoimport -d novelRS -c novels  --file ./novels.dat
 ```
@@ -22,7 +26,7 @@ mongoimport -d novelRS -c novels  --file ./novels.dat
 - 2、对小说分词<br>
 - 3、对分词后的小说进行TF-IDF向量化<br>
 - 4、最近邻查找<br>
-- 4、保存相似度<br>
+- 5、保存相似度到数据库<br>
 
 ## 安装
 ### 配置
@@ -52,7 +56,7 @@ python chapter_crawler.py   # 爬去小说章节(1M带宽的服务器差不多�
 ```
 
 ### 推荐系统
-测试服务器配置:阿里云8G内存
+测试服务器配置: 阿里云8G内存
 ``` shell
 cd RS
 python word_segmentation.py         # 分词, 跑了13多个小时
