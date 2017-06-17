@@ -36,8 +36,8 @@ class ChapterCrawler:
             chapters = self.__parse_chapters(novel['_id'], novel['url'], html)
 
             print("chapters num: ", len(chapters))
-            # 小于300章的小说不进行统计，把novel的success设为0
-            if len(chapters) <= 300:
+            # 小于500章的小说不进行统计，把novel的success设为0
+            if len(chapters) <= 500:
                 self.__update_failed_novel(novel)
                 continue
             # 使用协程提高效率
@@ -47,7 +47,7 @@ class ChapterCrawler:
             for chapter in chapters:
                 tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
                 chapter_count += 1
-                if chapter_count > 100:      # 节省硬盘，每本小说只爬取前100章
+                if chapter_count > 150:      # 节省硬盘，每本小说只爬取前150章
                     break
             gevent.joinall(tasks)
             # 把小说存到文件系统里
