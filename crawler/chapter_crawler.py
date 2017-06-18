@@ -97,8 +97,8 @@ class ChapterCrawler:
     def __parse_chapters(_id, url, html):
         """ 解析小说章节 """
         chapters = []
-        bs_obj = BeautifulSoup(html, "html.parser")
-        tds = bs_obj.find_all('td', {'class', 'L'})
+        soup = BeautifulSoup(html, "html.parser")
+        tds = soup.find_all('td', {'class', 'L'})
         for td in tds:
             if td.text.strip() != '':
                 chapters.append(Chapter(_id, td.text.strip(), url + td.a.attrs['href']))
@@ -107,8 +107,8 @@ class ChapterCrawler:
     @staticmethod
     def __parse_chapter_content(html):
         """ 解析小说内容 """
-        bs_obj = BeautifulSoup(html, "html.parser")
-        contents = bs_obj.find('dd', {'id': 'contents'})
+        soup = BeautifulSoup(html, "html.parser")
+        contents = soup.find('dd', {'id': 'contents'})
         # print contents.text
         return contents.text
 
