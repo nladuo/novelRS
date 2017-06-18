@@ -36,8 +36,8 @@ class ChapterCrawler:
             chapters = self.__parse_chapters(novel['_id'], novel['url'], html)
 
             print("chapters num: ", len(chapters))
-            # 小于500章的小说不进行统计，把novel的success设为0
-            if len(chapters) <= 500:
+            # 小于300章的小说不进行统计，把novel的success设为0
+            if len(chapters) <= 300:
                 self.__update_failed_novel(novel)
                 continue
             # 使用协程提高效率

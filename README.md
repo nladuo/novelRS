@@ -49,10 +49,11 @@ pip install -r requirements.txt
 ```
 
 ### 爬虫
+说明:这里只爬取了章节数目多于300章的小说
 ``` shell
 cd crawler
-python novel_crawler.py     # 爬取小说
-python chapter_crawler.py   # 爬去小说章节(1M带宽的服务器差不多得爬个半天)
+python novel_crawler.py     # 爬取小说名称信息
+python chapter_crawler.py   # 爬取小说章节保存到本地(1M带宽的服务器差不多得爬个半天)
 ```
 
 ### 推荐系统
