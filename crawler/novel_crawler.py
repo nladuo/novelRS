@@ -12,12 +12,28 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-def get_page_num():
-    """ 爬取小说的页数 """
-    html = get_body("http://www.23us.com/quanben/1")
+def get_types():
+    """ 爬取小说的类型 """
+    html = get_body("http://www.suimeng.la/")
     soup = BeautifulSoup(html, "html.parser")
-    page_num_str = soup.find("div", {"id": "pagelink"}).find("a", {"class": "last"}).text
-    return int(page_num_str)
+    lis = soup.find("ul", {"class": "fl"}).find_all("li")
+    types = []
+    index = 1
+    for li in lis:
+        name = li.text
+        url = li.a.attrs['href']
+        if "sort" in url:
+            types.append({"name": name, "url": url, "index": index})
+            index += 1
+            print(name, url)
+    return types
+
+
+def get_page_num(url):
+    html = get_body(url)
+    soup = BeautifulSoup(html, "html.parser")
+
+    return int(soup.find("div", {"id": "pagelink"}).find("a", {"class": "last"}).text)
 
 
 class NovelCrawler:
@@ -29,14 +45,17 @@ class NovelCrawler:
         self.collection.ensure_index('url', unique=True)
 
     def run(self):
-        for i in range(1, get_page_num()+1):
-            print(".....................正在爬取第", i, "页.....................")
-            url = "http://www.23us.com/quanben/" + str(i)
-            html = get_body(url)
-            if html == '':
-                add_failed_url(self.db, url)
-            novels = self.__parse(html)
-            self.__add_novels(novels)
+        _types = get_types()
+        for t in _types:
+            for i in range(1, get_page_num(t["url"])+1):
+                print("................正在爬取[%s]的第%d页................" % (t["name"], i))
+                url = "http://www.suimeng.la/sort/%d-%d.html" % (t["index"], i)
+                print(url)
+                html = get_body(url)
+                if html == '':
+                    add_failed_url(self.db, url)
+                novels = self.__parse(html)
+                self.__add_novels(novels)
         self.__close()
 
     def __add_novels(self, novels):
@@ -54,18 +73,16 @@ class NovelCrawler:
         """ 解析小说 """
         novels = []
         soup = BeautifulSoup(html, "html.parser")
-        trs = soup.find_all('tr', {'bgcolor': '#FFFFFF'})
-        for tr in trs:
-            tds = tr.find_all("td")
-            name = tds[0].find_all("a")[1].text
-            url = tds[1].a.attrs['href']
-            html2 = get_body(tds[0].a.attrs['href'])
-            soup2 = BeautifulSoup(html2, "html.parser")
-            category = soup2.find_all('td')[0].text.strip()
-            word_num = soup2.find_all('td')[4].text
-            author = tds[2].text
-            novels.append(Novel(name, author, category, word_num, url))
-            print(name, author, category, word_num, url)
+        lis = soup.find("ul", {"class": "ultwo"}).find_all("li")
+        for li in lis:
+            name = li.find("a", {"class": "aname"}).text
+            url = li.find("a", {"class": "aname"}).attrs['href']
+            status = li.find("span", {"class": "aflag"}).text
+            info = li.find("p", {"class": "gray"}).text
+            author = info.split("\n")[0].split("：")[1].strip()
+            category = info.split("\n")[1].split("：")[1].strip()
+            novels.append(Novel(name, author, category, status, url))
+            print(name, author, category, status, url)
         return novels
 
 

@@ -3,11 +3,11 @@
 
 class Novel:
     """ 小说结构 """
-    def __init__(self, name, author, category, word_num, url):
+    def __init__(self, name, author, category, status, url):
         self.name = name
         self.author = author
         self.category = category
-        self.word_num = word_num
+        self.status = status
         self.url = url
 
     def dict(self):
@@ -15,10 +15,10 @@ class Novel:
             'name': self.name,
             'author': self.author,
             'category': self.category,
-            'word_num': self.word_num,
+            'status': self.status,
             'url': self.url,
             'is_crawled': False,                # 是否爬取过章节
-            'success': True,                    # 爬取章节是否成功
+            'success': True,                    # 爬取章节是否成功(即是否超过300章)
             'is_segment': False,                # 有没有分割过
             'is_compute': False,                # 有没有计算过相似度
             'similarities': ""                  # 记录相似的小说
