@@ -32,3 +32,11 @@ def add_failed_url(db, url):
     if collection.find({'url': url}).count() == 0:
         collection.insert(FailedUrl(url).dict())
 
+
+def format_book_name(name):
+    """ 格式化图书 """
+    name = name.replace("》全集", "")
+    name = name.replace("《", "")
+    name = name.split("/")[0]
+    name = name.split("(")[0]
+    return name
