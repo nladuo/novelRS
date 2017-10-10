@@ -20,7 +20,10 @@ def get_body(url):
     while retry_times < 3:
         try:
             content = requests.get(url, timeout=config['timeout']).content
-            return content.decode("gbk", "ignore")
+            return content
+        except KeyboardInterrupt:
+            print("KeyboardInterrupt, now_url:", url)
+            raise
         except:
             retry_times += 1
     return ''
