@@ -4,3 +4,4 @@
 *.dat
 get_count.sh
 *.pickle
+.ipynb_checkpoints/

@@ -36,8 +36,8 @@ class ChapterCrawler:
             chapters = self.__parse_chapters(novel['_id'], novel['url'], html)
 
             print("chapters num: ", len(chapters))
-            # 小于500章的小说不进行统计，把novel的success设为0
-            if len(chapters) <= 500:
+            # 小于300章的小说不进行统计，把novel的success设为0
+            if len(chapters) <= 300:
                 self.__update_failed_novel(novel)
                 continue
             # 使用协程提高效率
@@ -47,7 +47,7 @@ class ChapterCrawler:
             for chapter in chapters:
                 tasks.append(gevent.spawn(self.__async_get_chapter_content, chapter, q))
                 chapter_count += 1
-                if chapter_count > 150:      # 节省硬盘，每本小说只爬取前150章
+                if chapter_count > 100:      # 节省硬盘，每本小说只爬取前100章
                     break
             gevent.joinall(tasks)
             # 把小说存到文件系统里
@@ -62,8 +62,7 @@ class ChapterCrawler:
                 try:
                     content = self.__parse_chapter_content(body)
                     novel_content += content
-                except Exception:
-                    pass
+                except: pass
             self.__save_novel(novel, novel_content)
             self.__update_novel(novel)  # 把novel的is_crawled设为1
 
@@ -97,8 +96,8 @@ class ChapterCrawler:
     def __parse_chapters(_id, url, html):
         """ 解析小说章节 """
         chapters = []
-        bs_obj = BeautifulSoup(html, "html.parser")
-        tds = bs_obj.find_all('td', {'class', 'L'})
+        soup = BeautifulSoup(html, "html.parser")
+        tds = soup.find_all('td', {'class', 'ccss'})
         for td in tds:
             if td.text.strip() != '':
                 chapters.append(Chapter(_id, td.text.strip(), url + td.a.attrs['href']))
@@ -107,10 +106,10 @@ class ChapterCrawler:
     @staticmethod
     def __parse_chapter_content(html):
         """ 解析小说内容 """
-        bs_obj = BeautifulSoup(html, "html.parser")
-        contents = bs_obj.find('dd', {'id': 'contents'})
-        # print contents.text
-        return contents.text
+        soup = BeautifulSoup(html, "html.parser")
+        content = soup.find('div', {'id': 'ccontent'})
+        # print(content.text)
+        return content.text
 
     @staticmethod
     def __save_novel(novel, novel_content):

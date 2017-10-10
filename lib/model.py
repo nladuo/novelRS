@@ -3,42 +3,24 @@
 
 class Novel:
     """ 小说结构 """
-    def __init__(self, name, author, category, word_num, url):
+    def __init__(self, name, url, author, category, abstract, download_url):
         self.name = name
+        self.url = url
         self.author = author
         self.category = category
-        self.word_num = word_num
-        self.url = url
+        self.abstract = abstract
+        self.download_url = download_url
 
     def dict(self):
         return {
             'name': self.name,
+            'url': self.url,
             'author': self.author,
             'category': self.category,
-            'word_num': self.word_num,
-            'url': self.url,
-            'is_crawled': False,                # 是否爬取过章节
-            'success': True,                    # 爬取章节是否成功
-            'is_segment': False,                # 有没有分割过
-            'is_compute': False,                # 有没有计算过相似度
-            'similarities': ""                  # 记录相似的小说
-        }
-
-
-class Chapter:
-    """ 储存小说章节 """
-    def __init__(self, novel_id, name, url, content=''):
-        self.novel_id = novel_id
-        self.name = name
-        self.url = url
-        self.content = content
-
-    def dict(self):
-        return {
-            'novel_id': self.novel_id,
-            'name': self.name,
-            'url': self.url,
-            'content': self.content
+            'abstract': self.abstract,
+            'download_url': self.download_url,
+            'is_downloaded': False,                 # 是否下载
+            'success': True,                        # 下载是否成功
         }
 
 
