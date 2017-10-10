@@ -1,7 +1,7 @@
 # coding=utf-8
 
 config = {
-    'timeout': 3,
+    'timeout': 10,
     'db_user': '',          # mongodb的用户名
     'db_pass': '',          # mongodb的密码
     'db_host': 'localhost',

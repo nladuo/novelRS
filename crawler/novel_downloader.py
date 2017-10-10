@@ -62,8 +62,7 @@ class ChapterCrawler:
                 try:
                     content = self.__parse_chapter_content(body)
                     novel_content += content
-                except Exception:
-                    pass
+                except: pass
             self.__save_novel(novel, novel_content)
             self.__update_novel(novel)  # 把novel的is_crawled设为1
 
@@ -97,8 +96,8 @@ class ChapterCrawler:
     def __parse_chapters(_id, url, html):
         """ 解析小说章节 """
         chapters = []
-        bs_obj = BeautifulSoup(html, "html.parser")
-        tds = bs_obj.find_all('td', {'class', 'L'})
+        soup = BeautifulSoup(html, "html.parser")
+        tds = soup.find_all('td', {'class', 'ccss'})
         for td in tds:
             if td.text.strip() != '':
                 chapters.append(Chapter(_id, td.text.strip(), url + td.a.attrs['href']))
@@ -107,10 +106,10 @@ class ChapterCrawler:
     @staticmethod
     def __parse_chapter_content(html):
         """ 解析小说内容 """
-        bs_obj = BeautifulSoup(html, "html.parser")
-        contents = bs_obj.find('dd', {'id': 'contents'})
-        # print contents.text
-        return contents.text
+        soup = BeautifulSoup(html, "html.parser")
+        content = soup.find('div', {'id': 'ccontent'})
+        # print(content.text)
+        return content.text
 
     @staticmethod
     def __save_novel(novel, novel_content):

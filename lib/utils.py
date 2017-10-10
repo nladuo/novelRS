@@ -20,7 +20,7 @@ def get_body(url):
     while retry_times < 3:
         try:
             content = requests.get(url, timeout=config['timeout']).content
-            return content
+            return content.decode("gbk", "ignore")
         except:
             retry_times += 1
     return ''
