@@ -56,7 +56,6 @@ class InfoCrawler:
                 if html == "":
                     add_failed_url(self.db, url);continue
                 novels = self.__parse(html)
-                exit()
                 self.__add_novels(novels)
         self.__close()
 
