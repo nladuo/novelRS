@@ -28,18 +28,26 @@ class InfoCrawler:
         self.collection.ensure_index('url', unique=True)
 
     def run(self):
+        # 只爬取武侠仙侠和玄幻奇幻两个部分
         start_urls = [
             "http://www.qisuu.com/soft/sort01/",
             "http://www.qisuu.com/soft/sort02/"
         ]
 
+        # For中断重新爬取
+        start_index = {
+            "http://www.qisuu.com/soft/sort01/": 1,
+            "http://www.qisuu.com/soft/sort02/": 1
+        }
+
+        # 开始爬取
         for start_url in start_urls:
             html = get_body(start_url)
             if html == "":
                 raise Exception("Error download init url: %s" % start_url )
             page_num = get_page_num(html)
             print(start_url, "page_num:", page_num)
-            for page in range(1, page_num + 1):
+            for page in range(start_index[start_url], page_num + 1):
                 url = start_url + "index_%d.html" % page
                 if page == 1:
                     url = start_url + "index.html"
@@ -64,6 +72,7 @@ class InfoCrawler:
     @staticmethod
     def __parse(html):
         """ 解析小说 """
+        # print(html)
         novels = []
         soup = BeautifulSoup(html, "html.parser")
         lis = soup.find("div", {"class": "listBox"}).find_all("li")
@@ -80,7 +89,6 @@ class InfoCrawler:
                         get_text().replace("书籍作者：", "")
                     txt_url = soup2.find("div", {"class": "showDown"}).find_all("li")[1].a["href"]
                     category = soup2.find("div", {"class": "wrap position"}).span.find_all("a")[-2].get_text()
-
                     print("    ", "《"+name+"》", "作者:", author, "类别:", category, txt_url)
                     novels.append(Novel(name, url, author, category, abstract, txt_url))
         return novels
