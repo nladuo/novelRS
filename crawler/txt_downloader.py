@@ -11,6 +11,18 @@ import urllib
 reload(sys)
 sys.setdefaultencoding('utf8')
 
+def reporthook(count, block_size, total_size):
+    global start_time
+    if count == 0:
+        start_time = time.time()
+        return
+    duration = time.time() - start_time
+    progress_size = int(count * block_size)
+    speed = int(progress_size / (1024 * duration))
+    percent = min(int(count * block_size * 100 / total_size), 100)
+    sys.stdout.write("\r...%d%%, %d KB, %d KB/s, %d seconds passed" %
+                    (percent, progress_size / (1024), speed, duration))
+    sys.stdout.flush()
 
 class TxtDownloader:
     """ 爬取小说的章节，存到数据库中 """
@@ -30,9 +42,9 @@ class TxtDownloader:
             print("downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
                   download_url)
             filename = './corpus/' + str(novel['_id']) + ".txt"
-            urllib.urlretrieve(download_url, filename)
+            urllib.urlretrieve(download_url, filename, reporthook)
 
-            print("saved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
+            print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
             self.__update_novel(novel)  # 把novel的is_downloaded设为1
 
         self.__close()
