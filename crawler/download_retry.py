@@ -1,4 +1,5 @@
 # coding=utf-8
+""" 重新下载大小小于100K的小说(由于下载失败导致的) """
 from __future__ import print_function
 import time
 import sys
@@ -7,6 +8,7 @@ from lib.utils import *
 from lib.config import *
 import urllib
 import os.path
+
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -24,12 +26,22 @@ def reporthook(count, block_size, total_size):
                     (percent, progress_size / 1024, speed, duration))
     sys.stdout.flush()
 
+def need_download(novel):
+    path = os.path.join('corpus', str(novel["_id"]) + ".txt")
+    filesize = os.path.getsize(path)
+    need = filesize < 50 * 1024 # 小于50KB要重新下载一遍
+
+    if need:
+        print(novel['_id'], novel['name'], "filesize:", filesize)
+
+    return need
+
 class TxtDownloader:
     """ 爬取小说的章节，存到数据库中 """
     def __init__(self):
         self.client = init_client()
         self.db = self.client[config['db_name']]
-        self.novels = self.db.novels.find({'is_downloaded': False})
+        self.novels = self.db.novels.find({})
 
     def run(self):
         novels = []
@@ -38,15 +50,17 @@ class TxtDownloader:
             novels.append(novel)
 
         for novel in novels:
+            if not need_download(novel):
+                continue
+
             download_url = urllib.quote(str(novel['download_url'])).replace("http%3A", "http:")
-            print("downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
+            print("retry downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
                   download_url)
 
-            filename =  os.path.join('corpus', str(novel["_id"]) + ".txt")
+            filename = os.path.join('corpus', str(novel['_id']) + ".txt")
             urllib.urlretrieve(download_url, filename, reporthook)
 
             print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-            self.__update_novel(novel)  # 把novel的is_downloaded设为1
 
         self.__close()
 
