@@ -44,3 +44,8 @@ def format_book_name(name):
     name = name.split("/")[0]
     name = name.split("(")[0]
     return name
+
+
+def read_novel(path):
+    with open(path, "r") as f:
+        return f.read().decode("gb2312", 'ignore')

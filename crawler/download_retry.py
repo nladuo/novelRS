@@ -13,19 +13,6 @@ import os.path
 reload(sys)
 sys.setdefaultencoding('utf8')
 
-def reporthook(count, block_size, total_size):
-    global start_time
-    if count == 0:
-        start_time = time.time()
-        return
-    duration = time.time() - start_time
-    progress_size = int(count * block_size)
-    speed = int(progress_size / (1024 * duration))
-    percent = min(int(count * block_size * 100 / total_size), 100)
-    sys.stdout.write("\r...%d%%, %d KB, %d KB/s, %d seconds passed" %
-                    (percent, progress_size / 1024, speed, duration))
-    sys.stdout.flush()
-
 def need_download(novel):
     path = os.path.join('corpus', str(novel["_id"]) + ".txt")
     filesize = os.path.getsize(path)
@@ -36,7 +23,7 @@ def need_download(novel):
 
     return need
 
-class TxtDownloader:
+class DownloadRetryer:
     """ 爬取小说的章节，存到数据库中 """
     def __init__(self):
         self.client = init_client()
@@ -50,24 +37,15 @@ class TxtDownloader:
             novels.append(novel)
 
         for novel in novels:
-            if not need_download(novel):
-                continue
-
-            download_url = urllib.quote(str(novel['download_url'])).replace("http%3A", "http:")
-            print("retry downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
-                  download_url)
-
-            filename = os.path.join('corpus', str(novel['_id']) + ".txt")
-            urllib.urlretrieve(download_url, filename, reporthook)
-
-            print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
+            if need_download(novel):
+                self.__update_novel(novel)
 
         self.__close()
 
     def __update_novel(self, novel):
         """ 把小说设置为已经爬去取过 """
         self.db.novels.update({'_id': novel['_id']}, {
-            '$set': {'is_downloaded': True},
+            '$set': {'is_downloaded': False},
         })
 
     def __close(self):
@@ -75,6 +53,7 @@ class TxtDownloader:
         self.client.close()
 
 if __name__ == '__main__':
-    crawler = TxtDownloader()
-    crawler.run()
-    print("txt_downloader has been finished.")
+    retryer = DownloadRetryer()
+    retryer.run()
+    print("DownloadRetryer has been finished.")
+
