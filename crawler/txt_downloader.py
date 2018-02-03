@@ -6,7 +6,7 @@ sys.path.append("../")
 from lib.utils import *
 from lib.config import *
 import urllib
-
+import os.path
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -21,7 +21,7 @@ def reporthook(count, block_size, total_size):
     speed = int(progress_size / (1024 * duration))
     percent = min(int(count * block_size * 100 / total_size), 100)
     sys.stdout.write("\r...%d%%, %d KB, %d KB/s, %d seconds passed" %
-                    (percent, progress_size / (1024), speed, duration))
+                    (percent, progress_size / 1024, speed, duration))
     sys.stdout.flush()
 
 class TxtDownloader:
@@ -41,7 +41,8 @@ class TxtDownloader:
             download_url = urllib.quote(str(novel['download_url'])).replace("http%3A", "http:")
             print("downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
                   download_url)
-            filename = './corpus/' + str(novel['_id']) + ".txt"
+
+            filename =  os.path.join('corpus', str(novel["_id"]) + ".txt")
             urllib.urlretrieve(download_url, filename, reporthook)
 
             print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))

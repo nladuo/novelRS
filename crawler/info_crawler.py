@@ -98,3 +98,4 @@ if __name__ == '__main__':
     crawler = InfoCrawler()
     crawler.run()
     print("info_crawler has been finished.")
+
