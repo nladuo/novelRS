@@ -22,7 +22,7 @@ class WordSegmentation:
         self.collection.ensure_index('url', unique=True)
         self.novels = self.collection.find({
             'success': True,
-            'is_crawled': True,
+            'is_downloaded': True,
             'is_segment': False
         })
 
@@ -66,6 +66,9 @@ class WordSegmentation:
         if os.path.exists(filename):
             with open(filename, "rb") as f:
                 text = f.read()
+            if len(text) > 1000000:  # 截取前100万个
+                # print(len(text))
+                text = text[:1000000]
             return text
         else:
             raise Exception('文件：' + filename + " 不存在")

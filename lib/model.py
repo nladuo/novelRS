@@ -20,7 +20,8 @@ class Novel:
             'abstract': self.abstract,
             'download_url': self.download_url,
             'is_downloaded': False,                 # 是否下载
-            'success': True,                        # 下载是否成功
+            'success': True,                        # 下载是否成功,
+            'is_segment': False,                    # 是否分词
         }
 
 
