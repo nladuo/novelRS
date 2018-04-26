@@ -38,7 +38,7 @@ class TxtDownloader:
             novels.append(novel)
 
         for novel in novels:
-            download_url = urllib.quote(str(novel['download_url'])).replace("http%3A", "http:")
+            download_url = urllib.quote(str(novel['download_url'])).replace("https%3A", "https:")
             print("downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
                   download_url)
 
