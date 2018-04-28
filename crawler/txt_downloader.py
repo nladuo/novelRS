@@ -7,6 +7,9 @@ from lib.utils import *
 from lib.config import *
 import urllib
 import os.path
+import socket
+socket.setdefaulttimeout(5)
+
 
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -43,10 +46,17 @@ class TxtDownloader:
                   download_url)
 
             filename =  os.path.join('corpus', str(novel["_id"]) + ".txt")
-            urllib.urlretrieve(download_url, filename, reporthook)
+            success = False
+	    while not success:
+		try:
+	            urllib.urlretrieve(download_url, filename, reporthook)
+		    success = True
+		except IOError:
+		    print("timeout error")
 
             print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
             self.__update_novel(novel)  # 把novel的is_downloaded设为1
+	    time.sleep(1)
 
         self.__close()
 
