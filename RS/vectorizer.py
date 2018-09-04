@@ -6,9 +6,9 @@ import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from time import time
 sys.path.append("../")
-from lib.utils import *
-from lib.config import *
-from lib.stop_words import stop_words
+from RS.lib.utils import *
+from RS.lib.config import *
+from RS.lib.stop_words import stop_words
 
 reload(sys)
 sys.setdefaultencoding('utf8')

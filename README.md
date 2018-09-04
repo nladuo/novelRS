@@ -5,7 +5,7 @@
 重新开发中......
 
 ## 开发语言
-python2.7
+python3.5
 
 ## LICENSE
 MIT

@@ -1,16 +1,13 @@
 # coding=utf-8
 """ 标记下载大小小于400K的小说 """
 from __future__ import print_function
-import time
 import sys
 sys.path.append("../")
-from lib.utils import *
-from lib.config import *
-import urllib
+from RS.lib.utils import *
+from RS.lib.config import *
 import os.path
 
 
-reload(sys)
 sys.setdefaultencoding('utf8')
 
 def check_download(novel):

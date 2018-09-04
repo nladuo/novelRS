@@ -1,15 +1,10 @@
 # coding=utf-8
 from __future__ import print_function
 from bs4 import BeautifulSoup
-import sys
-sys.path.append("../")
 from lib.utils import *
 from lib.model import *
 from lib.config import *
-
-
-reload(sys)
-sys.setdefaultencoding('utf8')
+import traceback
 
 
 def get_page_num(html):
@@ -63,7 +58,8 @@ class InfoCrawler:
         for novel in novels:
             try:
                 self.collection.insert(novel.dict())
-            except: pass
+            except Exception as ex:
+                traceback.print_exc()
 
     def __close(self):
         """ 关闭数据库 """

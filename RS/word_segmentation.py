@@ -5,9 +5,8 @@ import os
 import sys
 from bson.objectid import ObjectId
 sys.path.append("../")
-from lib.config import *
-from lib.utils import *
-from lib.model import *
+from RS.lib.config import *
+from RS.lib.utils import *
 
 reload(sys)
 sys.setdefaultencoding('utf8')

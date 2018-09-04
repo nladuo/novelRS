@@ -4,9 +4,9 @@ import cPickle as pickle
 import sys
 from bson.objectid import ObjectId
 sys.path.append("../")
-from lib.model import *
-from lib.utils import *
-from lib.config import *
+from RS.lib.model import *
+from RS.lib.utils import *
+from RS.lib.config import *
 from scipy.sparse import csr_matrix
 
 reload(sys)

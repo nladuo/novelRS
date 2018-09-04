@@ -2,6 +2,7 @@
 
 import os
 
+
 def load_stop_words():
     """ 停用词来自: http://blog.csdn.net/shijiebei2009/article/details/39696571 """
     words = []

@@ -1,16 +1,10 @@
 # coding=utf-8
 from flask import Flask, send_from_directory
-import cPickle as pickle
+import pickle
 from bson.objectid import ObjectId
 import json
-import sys
-sys.path.append("../")
-from lib.utils import *
-from lib.config import *
-
-reload(sys)
-sys.setdefaultencoding('utf8')
-
+from RS.lib.utils import *
+from RS.lib.config import *
 
 app = Flask(__name__, static_folder='dist')
 
@@ -61,6 +55,7 @@ def serve_static(path):
 @app.route('/api/search/<name>')
 def search(name=""):
     return json.dumps(get_novels(name))
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=38438, debug=True)

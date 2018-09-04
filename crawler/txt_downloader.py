@@ -1,18 +1,15 @@
 # coding=utf-8
 from __future__ import print_function
 import time
-import sys
-sys.path.append("../")
 from lib.utils import *
 from lib.config import *
-import urllib
+from urllib.parse import quote
+from urllib.request import urlretrieve
 import os.path
 import socket
-socket.setdefaulttimeout(5)
+import sys
+socket.setdefaulttimeout(20)
 
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 def reporthook(count, block_size, total_size):
     global start_time
@@ -24,8 +21,9 @@ def reporthook(count, block_size, total_size):
     speed = int(progress_size / (1024 * duration))
     percent = min(int(count * block_size * 100 / total_size), 100)
     sys.stdout.write("\r...%d%%, %d KB, %d KB/s, %d seconds passed" %
-                    (percent, progress_size / 1024, speed, duration))
+                     (percent, progress_size / 1024, speed, duration))
     sys.stdout.flush()
+
 
 class TxtDownloader:
     """ 爬取小说的章节，存到数据库中 """
@@ -41,22 +39,22 @@ class TxtDownloader:
             novels.append(novel)
 
         for novel in novels:
-            download_url = urllib.quote(str(novel['download_url'])).replace("https%3A", "https:")
+            download_url = quote(str(novel['download_url'])).replace("https%3A", "https:")
             print("downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
                   download_url)
 
             filename =  os.path.join('corpus', str(novel["_id"]) + ".txt")
             success = False
-	    while not success:
-		try:
-	            urllib.urlretrieve(download_url, filename, reporthook)
-		    success = True
-		except IOError:
-		    print("timeout error")
+            while not success:
+                try:
+                    urlretrieve(download_url, filename, reporthook)
+                    success = True
+                except IOError:
+                    print("timeout error")
 
-            print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-            self.__update_novel(novel)  # 把novel的is_downloaded设为1
-	    time.sleep(1)
+                    print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
+                    self.__update_novel(novel)  # 把novel的is_downloaded设为1
+                time.sleep(1)
 
         self.__close()
 
@@ -69,6 +67,7 @@ class TxtDownloader:
     def __close(self):
         """ 关闭数据库 """
         self.client.close()
+
 
 if __name__ == '__main__':
     crawler = TxtDownloader()
