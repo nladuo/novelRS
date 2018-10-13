@@ -1,17 +1,11 @@
 # coding=utf-8
 from __future__ import print_function
-import sys
-import cPickle as pickle
+import pickle
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from time import time
-sys.path.append("../")
-from RS.lib.utils import *
-from RS.lib.config import *
-from RS.lib.stop_words import stop_words
-
-reload(sys)
-sys.setdefaultencoding('utf8')
+from lib.utils import *
+from lib.config import *
 
 
 class Vectorizer:
@@ -30,7 +24,7 @@ class Vectorizer:
     def run(self):
         contents = [self.__read_file(novel['_id'])
                         for novel in self.novels]
-        vectorizer = TfidfVectorizer(input="file", stop_words=stop_words, max_features=50000)
+        vectorizer = TfidfVectorizer(input="file", max_features=50000)
 
         print("start vectorizing...")
         t0 = time()
@@ -50,7 +44,6 @@ class Vectorizer:
         # 关闭数据库
         self.__close()
         print("Finished!! All documents has been vectorized.")
-
 
     def __close(self):
         """ 关闭数据库 """

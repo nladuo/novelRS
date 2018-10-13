@@ -57,7 +57,8 @@ class InfoCrawler:
     def __add_novels(self, novels):
         for novel in novels:
             try:
-                self.collection.insert(novel.dict())
+                if self.collection.find({"url": novel.url}).count() == 0:
+                    self.collection.insert(novel.dict())
             except Exception as ex:
                 traceback.print_exc()
 
@@ -82,11 +83,8 @@ class InfoCrawler:
                     abstract = soup2.find("div", {"class": "showInfo"}).get_text()
                     author = soup2.find("div", {"class": "detail_right"}).find_all("li")[5].\
                         get_text().replace("书籍作者：", "")
-
                     name = soup2.find("div", {"class": "showDown"}).script.get_text().split("'")[5]
-
                     txt_url = soup2.find("div", {"class": "showDown"}).script.get_text().split("','")[1]
-
                     category = soup2.find("div", {"class": "wrap position"}).span.find_all("a")[-2].get_text()
                     print("《"+name+"》", "作者:", author, "类别:", category, txt_url)
                     novels.append(Novel(name, url, author, category, abstract, txt_url))

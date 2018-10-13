@@ -2,14 +2,9 @@
 from __future__ import print_function
 import jieba
 import os
-import sys
 from bson.objectid import ObjectId
-sys.path.append("../")
-from RS.lib.config import *
-from RS.lib.utils import *
-
-reload(sys)
-sys.setdefaultencoding('utf8')
+from lib.config import *
+from lib.utils import *
 
 
 class WordSegmentation:

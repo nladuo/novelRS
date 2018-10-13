@@ -1,16 +1,12 @@
 # coding=utf-8
 from __future__ import print_function
-import cPickle as pickle
+import pickle
 import sys
 from bson.objectid import ObjectId
-sys.path.append("../")
 from RS.lib.model import *
 from RS.lib.utils import *
 from RS.lib.config import *
 from scipy.sparse import csr_matrix
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 
 class SimilarityComputation:

@@ -17,10 +17,12 @@ def reporthook(count, block_size, total_size):
         start_time = time.time()
         return
     duration = time.time() - start_time
+    if duration == 0:
+        duration = 1
     progress_size = int(count * block_size)
     speed = int(progress_size / (1024 * duration))
     percent = min(int(count * block_size * 100 / total_size), 100)
-    sys.stdout.write("\r...%d%%, %d KB, %d KB/s, %d seconds passed" %
+    sys.stdout.write("\r.....%d%%, %d KB, %d KB/s, %d seconds passed....." %
                      (percent, progress_size / 1024, speed, duration))
     sys.stdout.flush()
 
@@ -43,18 +45,27 @@ class TxtDownloader:
             print("downloading", novel['_id'], novel['name'], novel['author'], novel["category"],
                   download_url)
 
-            filename =  os.path.join('corpus', str(novel["_id"]) + ".txt")
+            filename = os.path.join('corpus', str(novel["_id"]) + ".txt")
             success = False
             while not success:
                 try:
                     urlretrieve(download_url, filename, reporthook)
                     success = True
-                except IOError:
+                except IOError as ex:
+                    if "HTTP Error 404: Not Found" in str(ex):
+                        break
                     print("timeout error")
-
-                    print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
-                    self.__update_novel(novel)  # 把novel的is_downloaded设为1
                 time.sleep(1)
+
+            # 判断爬取是否正确
+            if success:
+                print("\nSaved in", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time())))
+            else:
+                print("HTTP Error 404: Not Found")
+                self.__update_failed_novel(novel)  # 把novel的success设为false
+            self.__update_novel(novel)  # 把novel的is_downloaded设为true
+            print("\n")
+            time.sleep(1)
 
         self.__close()
 
@@ -62,6 +73,12 @@ class TxtDownloader:
         """ 把小说设置为已经爬去取过 """
         self.db.novels.update({'_id': novel['_id']}, {
             '$set': {'is_downloaded': True},
+        })
+
+    def __update_failed_novel(self, novel):
+        """ 把小说设置为已经爬去取过 """
+        self.db.novels.update({'_id': novel['_id']}, {
+            '$set': {'success': False},
         })
 
     def __close(self):

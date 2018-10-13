@@ -1,24 +1,19 @@
 # coding=utf-8
 """ 标记下载大小小于400K的小说 """
 from __future__ import print_function
-import sys
-sys.path.append("../")
-from RS.lib.utils import *
-from RS.lib.config import *
+from lib.utils import *
+from lib.config import *
 import os.path
 
-
-sys.setdefaultencoding('utf8')
 
 def check_download(novel):
     path = os.path.join('corpus', str(novel["_id"]) + ".txt")
     filesize = os.path.getsize(path)
-    success = filesize >= 400 * 1024 # 保留大于400KB的小说
-
-
+    success = filesize >= 500 * 1024  # 保留大于500KB的小说
     print(novel['_id'], novel['name'], "filesize:", filesize, "success:", success)
 
     return success
+
 
 class DownloadChecker:
     """ 爬取小说的章节，存到数据库中 """
@@ -48,6 +43,7 @@ class DownloadChecker:
     def __close(self):
         """ 关闭数据库 """
         self.client.close()
+
 
 if __name__ == '__main__':
     checker = DownloadChecker()
