@@ -31,11 +31,21 @@ cd RS & ipython3 notebook
 - 4、KD-Tree最近邻查询
 - 5、相似度更新
 
-### 网页Demo
+### 运行网页Demo
 #### 导入数据
 数据下载链接:https://pan.baidu.com/s/1PFjFBtaKaBeS90CL5-hIKA  密码:f16j
 ``` sh
 mongoimport -d novelRS -c novels --file=novels.json
+```
+
+#### 前端说明
+基于vue1.0编写，可以不用care。
+``` sh
+cd web_demo
+npm install    # 安装依赖库
+npm run dev    # 调试模式
+npm run build  # 导出dist
+
 ```
 
 #### 运行后台
