@@ -8,11 +8,14 @@ import os.path
 
 def check_download(novel):
     path = os.path.join('corpus', str(novel["_id"]) + ".txt")
-    filesize = os.path.getsize(path)
-    success = filesize >= 500 * 1024  # 保留大于500KB的小说
-    print(novel['_id'], novel['name'], "filesize:", filesize, "success:", success)
+    try:
+        filesize = os.path.getsize(path)
+        success = filesize >= 500 * 1024  # 保留大于500KB的小说
+        print(novel['_id'], novel['name'], "filesize:", filesize, "success:", success)
 
-    return success
+        return success
+    except:
+        return False
 
 
 class DownloadChecker:

@@ -23,7 +23,7 @@ class InfoCrawler:
         self.collection.ensure_index('url', unique=True)
 
     def run(self):
-        # 只爬取武侠仙侠和玄幻奇幻两个部分
+        # 只爬取玄幻奇幻和武侠仙侠两个类别
         start_urls = [
             "https://www.qisuu.la/soft/sort01/",
             "https://www.qisuu.la/soft/sort02/"

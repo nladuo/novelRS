@@ -2,6 +2,5 @@
 *.log
 1.txt
 *.dat
-get_count.sh
 *.pickle
 .ipynb_checkpoints/

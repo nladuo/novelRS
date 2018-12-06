@@ -1,10 +1,9 @@
 # coding=utf-8
 from flask import Flask, send_from_directory
-import pickle
 from bson.objectid import ObjectId
 import json
-from RS.lib.utils import *
-from RS.lib.config import *
+from lib.utils import *
+from lib.config import *
 
 app = Flask(__name__, static_folder='dist')
 
@@ -20,12 +19,12 @@ def get_novels(name):
     if novel is None:
         return []
     result = []
-    similarities = pickle.loads(str(novel['similarities']))
-    for similarity in similarities[1:]:
+    similarities = novel['similarities']
+    for similarity in similarities:
         novel = collection.find_one({
-            '_id': ObjectId(similarity.novel_id),
+            '_id': ObjectId(similarity["id"]),
             'success': True,
-            # 'is_compute': True
+            'is_compute': True
         })
 
         if novel is None:
@@ -34,8 +33,7 @@ def get_novels(name):
             'name': novel['name'],
             'author': novel['author'],
             'category': novel['category'],
-            'word_num': novel['word_num'],
-            'similarity': similarity.similarity
+            'similarity': similarity['similarity']
         }
         result.append(n)
     client.close()
