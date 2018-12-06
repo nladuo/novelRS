@@ -7,5 +7,4 @@ gevent
 numpy
 scikit-learn
 flask
-gensim
 scipy

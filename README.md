@@ -30,10 +30,22 @@ cd RS & ipython3 notebook
 - 3、TF-IDF构建
 - 4、KD-Tree最近邻查询
 - 5、相似度更新
+
 ### 网页Demo
+#### 导入数据
+数据下载链接:https://pan.baidu.com/s/1PFjFBtaKaBeS90CL5-hIKA  密码:f16j
+``` sh
+mongoimport -d novelRS -c novels --file=novels.json
+```
+
+#### 运行后台
 ```bash
 cd web_demo & python3 main.py
 ```
+
+#### 测试效果
 运行后，打开[http://localhost:38438](http://localhost:38438)。
+![](screenshot.png)
+
 ## LICENSE
 MIT
