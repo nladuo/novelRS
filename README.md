@@ -6,15 +6,15 @@ python3.6 + mongodb
 
 ## 代码说明
 ### 运行小说爬虫
-下载小说列表：
+#### 下载小说列表：
 ```bash
 cd crawler & python3 info_crawler.py
 ```
-下载小说的txt文件：
+#### 下载小说的txt文件：
 ```bash
 cd crawler & python3 txt_downloader.py
 ```
-小说过滤（只考虑大于500KB的小说）：
+#### 小说过滤（只考虑大于500KB的小说）：
 ```bash
 cd crawler & python3 download_check.py
 ```
@@ -24,7 +24,7 @@ cd crawler & python3 download_check.py
 ```bash
 cd RS & ipython3 notebook
 ```
-然后逐步运行：
+然后逐步完成notebook中的以下步骤：
 - 1、分词
 - 2、词表分析
 - 3、TF-IDF构建
